@@ -20,5 +20,5 @@ from UniShed.login_user import views
 urlpatterns = [
     url(r'^$',views.index, name = 'index'),
     url(r'^admin/', admin.site.urls),
-    url(r'^login_user', include('login_user.urls'))
+    url(r'^login/', include('login_user.urls'))
 ]
