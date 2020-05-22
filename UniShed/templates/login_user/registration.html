@@ -1,0 +1,12 @@
+{% extends 'login_user/base.html' %}
+{% load staticfiles %}
+
+{% block body_block %}
+<div class="jumbotron">
+    {% if registered %}
+        <h1>Поздравляем! Вы зарегистрированы в системе</h1>
+    {%else%}
+        <h1></h1>
+    {% endif %}
+</div>
+{% endblock %}
