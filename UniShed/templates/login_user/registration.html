@@ -25,8 +25,8 @@
                 <div class="panel-body">
                     <div class="tab-content">
                         <div class="tab-pane fade in active" id="tab1default">
-                            <h3>Регистрация студента</h3>
-                            <form method="post">
+                            <h2>Регистрация студента</h2>
+                            <form method="POST">
                                 {% csrf_token %}
                                 {{ user_form.as_p }}
                                 {{ profile_form }}
