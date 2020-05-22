@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.conf.urls import url, include
-from login_user import views
+from UniShed.login_user import views
 
 urlpatterns = [
     url(r'^$',views.index, name = 'index'),
