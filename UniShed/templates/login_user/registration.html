@@ -1,12 +1,52 @@
-{% extends 'login_user/base.html' %}
-{% load staticfiles %}
+{% extends 'login_user/base.html'%}
+{% load staticfiles%}
+{% block body_block_authorization %}
 
-{% block body_block %}
 <div class="jumbotron">
-    {% if registered %}
-        <h1>Поздравляем! Вы зарегистрированы в системе</h1>
+    {%if registered %}
+        <h1>Спасибо за регистрацию!</h1>
     {%else%}
-        <h1></h1>
-    {% endif %}
+        <div class="col-md-6">
+            <div class="panel with-nav-tabs panel-default">
+                <div class="panel-heading">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a href="#tab1default" data-toggle="tab">Студент</a></li>
+                            <li><a href="#tab2default" data-toggle="tab">Преподаватель</a></li>
+                            <li class="dropdown">
+                                <a href="#" data-toggle="dropdown">Сотрудник <span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="#tab3default" data-toggle="tab">Кафе4дры</a></li>
+                                    <li><a href="#tab4default" data-toggle="tab">Деканата</a></li>
+                                    <li><a href="#tab5default" data-toggle="tab">Другой сотрудник</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                </div>
+                <div class="panel-body">
+                    <div class="tab-content">
+                        <div class="tab-pane fade in active" id="tab1default">
+                            <h3>Регистрация студента</h3>
+                            <form method="post">
+                                {% csrf_token %}
+                                {{ user_form.as_p }}
+                                {{ profile_form }}
+                                <input type="submit" name="" value="Регистрация">
+                            </form>
+                        </div>
+                        <div class="tab-pane fade" id="tab2default">Default 2</div>
+                        <div class="tab-pane fade" id="tab3default">Default 3</div>
+                        <div class="tab-pane fade" id="tab4default">Default 4</div>
+                        <div class="tab-pane fade" id="tab5default">Default 5</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+    {%endif%}
 </div>
-{% endblock %}
+
+
+{% block body_block_authorization %}
