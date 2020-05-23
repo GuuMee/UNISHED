@@ -3,7 +3,7 @@ from .forms import UserForm, UserProfileInfoForm
 
 # Create your views here.
 def index(request):
-    return render(request, 'login_user/index.html')
+    return render(request, 'index.html')
 
 def register(request):
 

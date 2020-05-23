@@ -29,9 +29,9 @@ class UserProfileInfo(models.Model): #this class inherit from models.Model
     #the reason for that is because this is a Model class to add an additional information that the defaultuser doesn't have
 
     #additional
-    middle_name = models.TextField(max_length=30, blank=False)
-    birth_date = models.DateField(null=False, blank=False)
-    phone = PhoneNumberField(null=False, blank=False, unique=True)
+    middle_name = models.CharField(max_length=30, blank=False, verbose_name=_("Отчество"))
+    birth_date = models.DateField(null=False, blank=False, verbose_name=_("Дата рождения"))
+    phone = PhoneNumberField(null=False, blank=False, unique=True, verbose_name=_("Телефон"))
 
     def __str__(self):
         return self.user.username
