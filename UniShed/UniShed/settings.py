@@ -125,8 +125,8 @@ LANGUAGE_CODE = 'ru-RU'
 
 #TimePicker Form's Input parameter's values
 DATE_INPUT_FORMATS = '%d.%m.%Y'
-START_DATE = '1950-01-01'
-END_DATE = '2008-01-01'
+MIN_DATE = 365*70
+MAX_DATE = 365*16
 
 TIME_ZONE = 'UTC'
 
