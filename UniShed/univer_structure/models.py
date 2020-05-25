@@ -78,7 +78,7 @@ class StaffOther(models.Model):
 
 class Discipline(models.Model):
     name = models.CharField(max_length='100')
-
+    lectors = models.ManyToManyField(Lector)
 
 class Shift(models.Model):
 
