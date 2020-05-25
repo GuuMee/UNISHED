@@ -1,17 +1,22 @@
 {% extends 'login_user/base.html' %}
+{% load static %}
 {% block body_block %}
 
     <div class="jumbotron">
-        <h1>Пожалуйста Войдите в Систему</h1>
+        <h2>Пожалуйста Войдите в Систему</h2>
         <form action="{% url 'login_user:user_login' %}" method="post">
             {% csrf_token %}
-            <labe for="username"> Логин:</labe>
+            <p>
+            <label for="username"> Логин:</label>
             <input type="text" name="username" placeholder="Введите логин">
-
+            </p>
+            <p>
             <label for="password"> Пароль:</label>
             <input type="text" name="password" placeholder="Введите пароль:">
-
+            </p>
+            <p>
             <input type="submit" value="Войти">
+            </p>
         </form>
 
     </div>
