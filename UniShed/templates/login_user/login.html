@@ -1,10 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'login_user/base.html' %}
+{% block body_block %}
 
-</body>
-</html>
+    <div class="jumbotron">
+        <h1>Пожалуйста Войдите в Систему</h1>
+        <form action="{% url 'login_user:user_login' %}" method="post">
+            {% csrf_token %}
+            <labe for="username"> Логин:</labe>
+            <input type="text" name="username" placeholder="Введите логин">
+
+            <label for="password"> Пароль:</label>
+            <input type="text" name="password" placeholder="Введите пароль:">
+
+            <input type="submit" value="Войти">
+        </form>
+
+    </div>
+
+{% endblock %}
