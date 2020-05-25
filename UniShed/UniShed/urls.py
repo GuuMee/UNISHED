@@ -25,4 +25,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('user/', include('login_user.urls')),
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
+    path('logout/', views.user_logout, name = 'logout'),
+    path('special/', views.special, name = 'special')
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
