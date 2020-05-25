@@ -21,7 +21,13 @@ class Department(models.Model):
     faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE, related_name='departments')
 
 
-# USERS
+class Group(models.Model):
+    name = models.CharField(max_length=10)
+    faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE, related_name='groups')
+
+
+
+#USERS
 
 class UserProfileInfo(models.Model): #this class inherit from models.Model
 
@@ -29,7 +35,7 @@ class UserProfileInfo(models.Model): #this class inherit from models.Model
     #the reason for that is because this is a Model class to add an additional information that the defaultuser doesn't have
 
     #additional
-    middle_name = models.CharField(max_length=30, blank=False, verbose_name=_("Отчество"))
+    middle_name = models.CharField(max_length=30, verbose_name=_("Отчество"))
     birth_date = models.DateField(null=False, blank=False, verbose_name=_("Дата рождения"))
     phone = PhoneNumberField(null=False, blank=False, unique=True, verbose_name=_("Телефон"))
 
@@ -45,11 +51,13 @@ class Student(models.Model):
 
     student_profile = models.OneToOneField(UserProfileInfo, on_delete=models.CASCADE)
 
+
     #fields for students
     student_card_n = models.CharField(max_length=7, blank=False, null=False)
     form_of_study = models.CharField(max_length=2,
                                      choices=FormOfStudy.choices,
                                      default=FormOfStudy.FULLTIME )
+
     def is_upperclass(self):
         return self.form_of_study in {self.FormOfStudy.FULLTIME, self.FormOfStudy.DISTANCE,}
 
