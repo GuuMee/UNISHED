@@ -10,11 +10,21 @@ from django.utils.translation import gettext_lazy as _
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(), label=_("Пароль"))
+    confirm_password = forms.CharField(widget=forms.PasswordInput(), label=_("Повторить  пароль"))
 
     class Meta():
         model = User
         fields = ('first_name', 'last_name', 'username', 'email', 'password')
 
+    def clean(self):
+        cleaned_data = super(UserForm, self).clean()
+        password = cleaned_data.get("password")
+        confirm_password = cleaned_data.get("confirm_password")
+
+        if password != confirm_password:
+            raise forms.ValidationError(
+                "Пароли не совпадают"
+            )
 
 class UserProfileInfoForm(forms.ModelForm):
     phone = PhoneNumberField(label=_("Телефон"))
