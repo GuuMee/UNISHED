@@ -1,37 +1,119 @@
-{% extends 'login_user/base.html'%}
+{% extends 'login_user/base.html' %}
 {% load static %}
 
 {% block body_block %}
-
 <div class="jumbotron">
     {%if registered %}
         <h1>Спасибо за регистрацию!</h1>
     {%else%}
-        <div class="col-md-6">
+        <div class="col-md-9">
             <div class="panel with-nav-tabs panel-default">
-                <div class="panel-heading">
-                        <ul class="nav nav-tabs">
-                            <li class="active"><a href="#tab1default" data-toggle="tab">Студент</a></li>
-                            <li><a href="#tab2default" data-toggle="tab">Преподаватель</a></li>
-                            <li class="dropdown">
-                                <a href="#" data-toggle="dropdown">Сотрудник <span class="caret"></span></a>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="#tab3default" data-toggle="tab">Кафе4дры</a></li
-                                    <li><a href="#tab5default" data-toggle="tab">Другой сотрудник</a></li>
-                                </ul>
+                <div class="panel-heading d-flex flex-row mb-3">
+                        <ul class="nav nav-tabs ">
+                            <li class="nav-item p-1">
+                                <a class="nav-link active" href="#tab1default" data-toggle="tab">Студент</a>
+                            </li>
+                            <li class="nav-item p-1">
+                                <a class="nav-link " href="#tab2default" data-toggle="tab">Преподаватель</a></li>
+                            <li class="nav-item dropdown p-1">
+                                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Сотрудник </a>
+                                <div class="dropdown-menu" role="menu">
+                                    <a class="dropdown-item" href="#tab3default" data-toggle="tab">Кафедры</a>
+                                    <a class="dropdown-item" href="#tab4default" data-toggle="tab">Другой сотрудник</a>
+                                </div>
                             </li>
                         </ul>
                 </div>
-                <div class="panel-body">
-                    <div class="tab-content">
-                        <div class="tab-pane fade in active" id="tab1default">
+                <div class="panel-body ">
+                    <div class="tab-content ">
+                        <div class="tab-pane fade-in active" id="tab1default">
                             <h2>Регистрация студента</h2>
                             <form method="POST">
-                                {% csrf_token %}
-                                {{ user_form.as_p }}
-                                {{ profile_form.as_p }}
-                                {{profile_form.media}}
+                                <div class="row">
+                               {% csrf_token %}
+                                {{ user_form.non_field_errors }}
+                                {{ user_form.source.errors }}
+                                {{ user_form.source }}
+                                {% if user_form.subject.errors %}
+                                    <ol>
+                                    {% for error in user_form.subject.errors %}
+                                        <li><strong>{{ error|escape }}</strong></li>
+                                    {% endfor %}
+                                    </ol>
+                                {% endif %}
+                                            <div class="d-flex flex-row">
+                                                <div class="p-1">
+                                                    <p>
+                                                        {{ user_form.last_name.label_tag }}
+                                                        {{ user_form.last_name }}</p>
+                                                    <p> {{ user_form.last_name.errors }} </p>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex flex-row">
+                                                <div class="p-1">
+                                                    <p>
+                                                        {{ user_form.first_name.label_tag }}
+                                                        {{ user_form.first_name }}</p>
+                                                    <p> {{ user_form.first_name.errors }} </p>
+                                                </div>
+
+                                            </div>
+                                            <div class="d-flex flex-row">
+                                                <div class="p-1">
+                                                    <p>
+                                                        {{ profile_form.middle_name.label_tag }}
+                                                        {{ profile_form.middle_name }}</p>
+                                                    <p> {{ profile_form.middle_name.errors }} </p>
+                                                </div>
+
+                                            </div>
+                                        <div class="d-flex flex-row ">
+                                            <div class="p-1 ">
+                                                <p>
+                                                    {{ user_form.username.label_tag }}
+                                                    {{ user_form.username }}</p>
+                                                <p> {{ user_form.username.errors }} </p>
+                                            </div>
+                                            <div class="p-1 ">
+                                                <p>
+                                                    {{ user_form.password.label_tag }}
+                                                    {{ user_form.password }}</p>
+                                                <p> {{ user_form.password.errors }} </p>
+                                            </div>
+                                            <div class="p-1 ">
+                                                <p>
+                                                    {{ user_form.confirm_password.label_tag }}
+                                                    {{ user_form.confirm_password }}</p>
+                                                <p> {{ user_form.confirm_password.errors }} </p>
+                                            </div>
+                                        </div>
+                                    <div class="d-flex flex-column ">
+                                            <div class="p-1">
+                                                <p>
+                                                    {{ profile_form.birth_date.label_tag }}
+                                                    {{ profile_form.birth_date}}</p>
+                                                <p> {{ profile_form.birth_date.errors }} </p>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex flex-row ">
+                                                <div class="p-1">
+                                                    <p>
+                                                        {{ profile_form.phone.label_tag }}
+                                                        {{ profile_form.phone }}</p>
+                                                    <p> {{ profile_form.phone.errors }} </p>
+                                                </div>
+                                            </div>
+                                    <div class="d-flex flex-row ">
+                                        <div class="p-1">
+                                            <p>
+                                                {{ user_form.email.label_tag }}
+                                                {{ user_form.email }}</p>
+                                            <p> {{ user_form.email.errors }} </p>
+                                        </div>
+                                    </div>
+                                </div>
                                 <input type="submit" name="" value="Регистрация">
+                                {{ profile_form.media }}
                             </form>
                         </div>
                         <div class="tab-pane fade" id="tab2default">
@@ -44,17 +126,30 @@
                                 <input type="submit" name="" value="Регистрация">
                             </form>
                         </div>
-                        <div class="tab-pane fade" id="tab3default">Default 3</div>
-                        <div class="tab-pane fade" id="tab4default">Default 4</div>
-                        <div class="tab-pane fade" id="tab5default">Default 5</div>
+                        <div class="tab-pane fade" id="tab3default">
+                            <h2>Регистрация сотрудника кафедры</h2>
+                            <form method="POST">
+                                {% csrf_token %}
+                                {{ user_form.as_p }}
+                                {{ profile_form.as_p }}
+                                {{profile_form.media}}
+                                <input type="submit" name="" value="Регистрация">
+                            </form>
+                        </div>
+                        <div class="tab-pane fade" id="tab4default">
+                            <h2>Регистрация сотрудника</h2>
+                            <form method="POST">
+                                {% csrf_token %}
+                                {{ user_form.as_p }}
+                                {{ profile_form.as_p }}
+                                {{profile_form.media}}
+                                <input type="submit" name="" value="Регистрация">
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
-
-
-
     {%endif%}
 </div>
 
