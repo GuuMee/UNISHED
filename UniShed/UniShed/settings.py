@@ -39,7 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'phonenumber_field',
+    'bootstrap4',
+    'bootstrap_datepicker_plus',
     'login_user',
+
 ]
 
 MIDDLEWARE = [
@@ -72,6 +75,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'UniShed.wsgi.application'
 
+BOOTSTRAP4 = {
+    'include_jquery': True,
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
@@ -114,7 +120,13 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
+
 LANGUAGE_CODE = 'ru-RU'
+
+#TimePicker Form's Input parameter's values
+DATE_INPUT_FORMATS = '%d.%m.%Y'
+START_DATE = '1950-01-01'
+END_DATE = '2008-01-01'
 
 TIME_ZONE = 'UTC'
 
@@ -130,3 +142,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [STATIC_DIR,]
+
+#login
+LOGIN_URL = 'login_user/login'
