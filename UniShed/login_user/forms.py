@@ -21,8 +21,8 @@ class UserProfileInfoForm(forms.ModelForm):
     birth_date = forms.DateField(
         widget=DatePickerInput(
             options={'locale': settings.LANGUAGE_CODE,
-                     'minDate': str(datetime.date.today() - datetime.timedelta(days=settings.MIN_DATE)),
-                     'maxDate': str(datetime.date.today() - datetime.timedelta(days=settings.MAX_DATE)),
+                     'minDate': str(datetime.date.today() - datetime.timedelta(days=settings.MIN_BIRTH_DATE)),
+                     'maxDate': str(datetime.date.today() - datetime.timedelta(days=settings.MAX_BIRTH_DATE)),
                      },
             format=settings.DATE_INPUT_FORMATS,
         ),
