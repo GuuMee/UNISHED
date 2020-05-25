@@ -1,3 +1,4 @@
+import datetime
 from django import forms
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -20,8 +21,8 @@ class UserProfileInfoForm(forms.ModelForm):
     birth_date = forms.DateField(
         widget=DatePickerInput(
             options={'locale': settings.LANGUAGE_CODE,
-                     'minDate': settings.START_DATE,
-                     'maxDate': settings.END_DATE,
+                     'minDate': str(datetime.date.today() - datetime.timedelta(days=settings.MIN_DATE)),
+                     'maxDate': str(datetime.date.today() - datetime.timedelta(days=settings.MAX_DATE)),
                      },
             format=settings.DATE_INPUT_FORMATS,
         ),
