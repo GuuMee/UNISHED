@@ -2,8 +2,6 @@ from django.db import models
 from login_user.models import UserProfileInfo
 from django.utils.translation import gettext_lazy as _
 
-# Create your models here.
-
 
 # Building section of the University
 
@@ -56,9 +54,6 @@ class Student(models.Model):
                                      choices=FormOfStudy.choices,
                                      default=FormOfStudy.FULLTIME )
 
-    def is_upperclass(self):
-        return self.form_of_study in {self.FormOfStudy.FULLTIME, self.FormOfStudy.DISTANCE,}
-
 
 class Lector(models.Model):
     profile = models.OneToOneField(UserProfileInfo, on_delete=models.CASCADE)
@@ -80,6 +75,7 @@ class Discipline(models.Model):
     name = models.CharField(max_length='100')
     lectors = models.ManyToManyField(Lector)
 
+
 class Shift(models.Model):
 
     class ShiftOfStudy(models.TextChoices):
@@ -92,11 +88,6 @@ class Shift(models.Model):
                                      default=ShiftOfStudy.FIRST_SHIFT
                                       )
 
-    def is_upperclass(self):
-        return self.shift_of_study in {self.ShiftOfStudy.FIRST_SHIFT,
-                                       self.ShiftOfStudy.SECOND_SHIFT,
-                                       self.ShiftOfStudy.EVENING_SHIFT
-                                       }
 
 class Week(models.Model):
 
@@ -108,6 +99,3 @@ class Week(models.Model):
                                      choices=WeekOfStudy.choices,
                                      default=WeekOfStudy.ODD_WEEK
                                      )
-
-    def is_upperclass(self):
-        return self.week_of_study in {self.WeekOfStudy.ODD_WEEK, self.WeekOfStudy.EVEN_WEEK}
