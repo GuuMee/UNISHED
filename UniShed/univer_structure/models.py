@@ -76,19 +76,6 @@ class Discipline(models.Model):
     lectors = models.ManyToManyField(Lector)
 
 
-class Shift(models.Model):
-
-    class ShiftOfStudy(models.TextChoices):
-        FIRST_SHIFT = '1 смена', _('Первая смена')
-        SECOND_SHIFT = '2 смена', _('Вторая смена')
-        EVENING_SHIFT = 'Вч. смена', _('Вечерняя смена')
-
-    shift_of_study = models.CharField(max_length=20,
-                                     choices=ShiftOfStudy.choices,
-                                     default=ShiftOfStudy.FIRST_SHIFT
-                                      )
-
-
 class Week(models.Model):
 
     class WeekOfStudy(models.TextChoices):
@@ -100,6 +87,7 @@ class Week(models.Model):
                                      default=WeekOfStudy.ODD_WEEK
                                      )
 
+
 class DayStudy(models.Model):
     class DayOfStudy(models.TextChoices):
         MONDAY = 'Понедельник', _('Пн')
@@ -109,10 +97,25 @@ class DayStudy(models.Model):
         FRIDAY = 'Пятница', _('Пт')
         SATURDAY = 'Суббота', _('Сб')
 
-    week_of_study = models.CharField(max_length=20,
-                                     choices=WeekOfStudy.choices,
-                                     default=WeekOfStudy.ODD_WEEK
+    week_names = models.CharField(max_length=20,
+                                     choices=DayOfStudy.choices,
+                                     default=DayOfStudy.ODD_WEEK
                                      )
+    days_of_week = models.ForeignKey(Week, on_delete=models.CASCADE, related_name='studydays')
+
+
+class Shift(models.Model):
+
+    class ShiftOfStudy(models.TextChoices):
+        FIRST_SHIFT = '1 смена', _('Первая смена')
+        SECOND_SHIFT = '2 смена', _('Вторая смена')
+        EVENING_SHIFT = 'Вч. смена', _('Вечерняя смена')
+
+    name_of_shift = models.CharField(max_length=20,
+                                     choices=ShiftOfStudy.choices,
+                                     default=ShiftOfStudy.FIRST_SHIFT
+                                      )
+
 
 class Times(models.Model):
 
@@ -128,8 +131,23 @@ class Times(models.Model):
 
     times_of_study = models.CharField(max_length=30,
                                       choices=TimesOfStudy.choices )
+    shift_of_times = models.ForeignKey(Shift, on_delete=models.CASCADE, related_name="Times")
 
-#Specific models about students
+
+# Specific models about students
+
+class Degree(models.Model):
+
+    class DegreesOfStudent(models.TextChoices):
+        BACHELOR_DEGREE = 'Бакалавриат', _('Бакалавриат')
+        SPECIALIST_DEGREE = 'Специалитет', _('Специалитет')
+        MASTERS_DEGREE = 'Магистратура', _('Магистратура')
+        PHD_DEGREE = 'Аспирантура', _('Аспирантура')
+
+    name_degree = models.CharField(max_length=10,
+                                     choices=DegreesOfStudent.choices,
+                                     default=DegreesOfStudent.FIRST_COURSE)
+
 
 class CourseNumber(models.Model):
 
@@ -141,21 +159,7 @@ class CourseNumber(models.Model):
         FOURTH_COURSE = '4 курс', _('Четвертый курс')
         FIFTH_COURSE = '5 курс', _('Пятый курс')
 
-    week_of_study = models.CharField(max_length=10,
-                                     choices=CoursesOfStudent.choices,
-                                     default=CoursesOfStudent.FIRST_COURSE
-                                     )
+    course_numbers = models.CharField(max_length=10, choices=CoursesOfStudent.choices,
+                                      default=CoursesOfStudent.FIRST_COURSE )
 
-
-class Degree(models.Model):
-
-    class DegreesOfStudent(models.TextChoices):
-        BACHELOR_DEGREE = 'Бакалавриат', _('Бакалавриат')
-        SPECIALIST_DEGREE = 'Специалитет', _('Специалитет')
-        MASTERS_DEGREE = 'Магистратура', _('Магистратура')
-        PHD_DEGREE = 'Аспирантура', _('Аспирантура')
-
-    week_of_study = models.CharField(max_length=10,
-                                     choices=DegreesOfStudent.choices,
-                                     default=DegreesOfStudent.FIRST_COURSE
-                                     )
+    program_degree = models.ForeignKey(Degree, on_delete=models.CASCADE, related_name="coursenumbers")
