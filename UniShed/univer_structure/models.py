@@ -14,6 +14,19 @@ class Auditorium(models.Model):
     corpus = models.ForeignKey(Corpus, on_delete=models.CASCADE, related_name='auditoriums')
 
 
+class AuditoriumType(models.Model):
+
+    class TypesOfAuditoriums (models.TextChoices):
+        LECTURE_AUDITORUIMS = 'Лекц. а.', _('Лекц. ауд.')
+        PRACTICE_AUDITORUIMS = 'Практ. а.', _('Практик. ауд.')
+        LABORATORIUMS = 'Лаб. а.', _('Лаб. ауд.')
+        DEPARTMENT_AUDITORIUMS = 'Каф. а.', _('Аудитория кафедры')
+
+    type_of_auditorium = models.CharField(max_length=10,
+                                     choices=TypesOfAuditoriums.choices,
+                                     default=TypesOfAuditoriums.LECTURE_AUDITORUIMS)
+
+
 # Hierarchy of the University
 
 class Institute(models.Model):
@@ -76,62 +89,16 @@ class Discipline(models.Model):
     lectors = models.ManyToManyField(Lector)
 
 
-class Week(models.Model):
+class DisciplineType(models.Model):
 
-    class WeekOfStudy(models.TextChoices):
-        ODD_WEEK = 'Нечетная н.', _('Нч. неделя')
-        EVEN_WEEK = 'Четная н.', _('Чт. неделя')
+    class TypesOfDiscipline (models.TextChoices):
+        LECTURE = 'Лк. зн.', _('Лекционное. занятие')
+        PRACTICE = 'Пр. зн.', _('Практическое. занятие.')
+        LABORATORY = 'Лаб. зн.', _('Лабораторное. занятие.')
 
-    week_of_study = models.CharField(max_length=20,
-                                     choices=WeekOfStudy.choices,
-                                     default=WeekOfStudy.ODD_WEEK
-                                     )
-
-
-class DayStudy(models.Model):
-    class DayOfStudy(models.TextChoices):
-        MONDAY = 'Понедельник', _('Пн')
-        TUESDAY = 'Вторник', _('Вт')
-        WEDNESDAY = 'Среда', _('Ср')
-        THURSDAY = 'Четверг', _('Чт')
-        FRIDAY = 'Пятница', _('Пт')
-        SATURDAY = 'Суббота', _('Сб')
-
-    week_names = models.CharField(max_length=20,
-                                     choices=DayOfStudy.choices,
-                                     default=DayOfStudy.ODD_WEEK
-                                     )
-    days_of_week = models.ForeignKey(Week, on_delete=models.CASCADE, related_name='studydays')
-
-
-class Shift(models.Model):
-
-    class ShiftOfStudy(models.TextChoices):
-        FIRST_SHIFT = '1 смена', _('Первая смена')
-        SECOND_SHIFT = '2 смена', _('Вторая смена')
-        EVENING_SHIFT = 'Вч. смена', _('Вечерняя смена')
-
-    name_of_shift = models.CharField(max_length=20,
-                                     choices=ShiftOfStudy.choices,
-                                     default=ShiftOfStudy.FIRST_SHIFT
-                                      )
-
-
-class Times(models.Model):
-
-    class TimesOfStudy(models.TextChoices):
-        FIRST_CLASS_TIME = '8:00-9:30', _('1.ПАРА 8:00-9:30')
-        SECOND_CLASS_TIME = '9:40-11:10', _('2.ПАРА 9:40-11:10')
-        THIRD_CLASS_TIME = '11:20-12:50', _('3.ПАРА 11:20-12:50')
-        FOURTH_CLASS_TIME = '13:00-14:30', _('4.ПАРА 13:00-14:30')
-        FIFTH_CLASS_TIME = '14:40-16:10', _('5.ПАРА 14:40-16:10')
-        SIXTH_CLASS_TIME = '16:20-17:50', _('6.ПАРА 16:20-17:50')
-        SEVENTH_CLASS_TIME = '18:00-19:30', _('7.ПАРА 18:00-19:30')
-        EIGHTH_CLASS_TIME = '19:40-21:10', _('8.ПАРА 19:40-21:10')
-
-    times_of_study = models.CharField(max_length=30,
-                                      choices=TimesOfStudy.choices )
-    shift_of_times = models.ForeignKey(Shift, on_delete=models.CASCADE, related_name="Times")
+    name_degree = models.CharField(max_length=10,
+                                     choices=TypesOfAuditoriums.choices,
+                                     default=TypesOfAuditoriums.LECTURE_AUDITORUIMS)
 
 
 # Specific models about students
