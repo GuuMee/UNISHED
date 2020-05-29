@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'bootstrap4',
     'bootstrap_datepicker_plus',
     'login_user',
+    'univer_structure',
+    'schedule',
 
 ]
 

@@ -50,14 +50,14 @@ class Specialty(models.Model):
 
 class Group(models.Model):
     name = models.CharField(max_length=10)
-    specialty = models.ForeignKey(on_delete=models.CASCADE, related_name='specialties')
+    specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, related_name='specialties')
 
 
 # Users of the UniShed System
 
 class Student(models.Model):
     profile = models.OneToOneField(UserProfileInfo, on_delete=models.CASCADE)
-    group = models.ForeignKey(on_delete=models.CASCADE, related_name='students')
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='students')
 
     class FormOfStudy(models.TextChoices):
         FULLTIME = 'ОЧ', _('Очная')
@@ -70,12 +70,12 @@ class Student(models.Model):
 
 class Lector(models.Model):
     profile = models.OneToOneField(UserProfileInfo, on_delete=models.CASCADE)
-    department = models.ForeignKey(on_delete=models.CASCADE, related_name='lectors')
+    department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='lectors')
 
 
 class StaffDepartment(models.Model):
     profile = models.OneToOneField(UserProfileInfo, on_delete=models.CASCADE)
-    department = models.ForeignKey(on_delete=models.CASCADE, related_name='department_staffs')
+    department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='department_staffs')
 
 
 class StaffOther(models.Model):
@@ -85,7 +85,7 @@ class StaffOther(models.Model):
 # University studies
 
 class Discipline(models.Model):
-    name = models.CharField(max_length='100')
+    name = models.CharField(max_length=200)
     lectors = models.ManyToManyField(Lector)
 
 
@@ -97,8 +97,8 @@ class DisciplineType(models.Model):
         LABORATORY = 'Лаб. зн.', _('Лабораторное. занятие.')
 
     name_degree = models.CharField(max_length=10,
-                                     choices=TypesOfAuditoriums.choices,
-                                     default=TypesOfAuditoriums.LECTURE_AUDITORUIMS)
+                                     choices=TypesOfDiscipline.choices,
+                                     default=TypesOfDiscipline.LECTURE)
 
 
 # Specific models about students
@@ -111,9 +111,9 @@ class Degree(models.Model):
         MASTERS_DEGREE = 'Магистратура', _('Магистратура')
         PHD_DEGREE = 'Аспирантура', _('Аспирантура')
 
-    name_degree = models.CharField(max_length=10,
+    name_degree = models.CharField(max_length=30,
                                      choices=DegreesOfStudent.choices,
-                                     default=DegreesOfStudent.FIRST_COURSE)
+                                     default=DegreesOfStudent.BACHELOR_DEGREE)
 
 
 class CourseNumber(models.Model):
