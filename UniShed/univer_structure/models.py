@@ -49,6 +49,28 @@ class Specialty(models.Model):
 
 
 class Group(models.Model):
+
+    class DegreesOfStudent(models.TextChoices):
+        BACHELOR_DEGREE = 'Бакалавриат', _('Бакалавриат')
+        SPECIALIST_DEGREE = 'Специалитет', _('Специалитет')
+        MASTERS_DEGREE = 'Магистратура', _('Магистратура')
+        PHD_DEGREE = 'Аспирантура', _('Аспирантура')
+
+    class CoursesOfStudent(models.TextChoices):
+        UNDER_COURSE = '0 курс', _('Подготовительный курс')
+        FIRST_COURSE = '1 курс', _('Первый курс')
+        SECOND_COURSE = '2 курс', _('Второй курс')
+        THIRD_COURSE = '3 курс', _('Третий курс')
+        FOURTH_COURSE = '4 курс', _('Четвертый курс')
+        FIFTH_COURSE = '5 курс', _('Пятый курс')
+
+    degree = models.CharField(max_length=30,
+                                   choices=DegreesOfStudent.choices,
+                                   default=DegreesOfStudent.BACHELOR_DEGREE)
+
+    course_number = models.CharField(max_length=10, choices=CoursesOfStudent.choices,
+                                      default=CoursesOfStudent.FIRST_COURSE )
+
     name = models.CharField(max_length=10)
     specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, related_name='specialties')
 
@@ -85,48 +107,19 @@ class StaffOther(models.Model):
 # University studies
 
 class Discipline(models.Model):
-    name = models.CharField(max_length=200)
-    lectors = models.ManyToManyField(Lector)
-
-
-class DisciplineType(models.Model):
 
     class TypesOfDiscipline (models.TextChoices):
         LECTURE = 'Лк. зн.', _('Лекционное. занятие')
         PRACTICE = 'Пр. зн.', _('Практическое. занятие.')
         LABORATORY = 'Лаб. зн.', _('Лабораторное. занятие.')
 
-    name_degree = models.CharField(max_length=10,
+    type_discipline = models.CharField(max_length=10,
                                      choices=TypesOfDiscipline.choices,
                                      default=TypesOfDiscipline.LECTURE)
+    name = models.CharField(max_length=200)
+    lectors = models.ManyToManyField(Lector)
 
 
-# Specific models about students
-
-class Degree(models.Model):
-
-    class DegreesOfStudent(models.TextChoices):
-        BACHELOR_DEGREE = 'Бакалавриат', _('Бакалавриат')
-        SPECIALIST_DEGREE = 'Специалитет', _('Специалитет')
-        MASTERS_DEGREE = 'Магистратура', _('Магистратура')
-        PHD_DEGREE = 'Аспирантура', _('Аспирантура')
-
-    name_degree = models.CharField(max_length=30,
-                                     choices=DegreesOfStudent.choices,
-                                     default=DegreesOfStudent.BACHELOR_DEGREE)
 
 
-class CourseNumber(models.Model):
 
-    class CoursesOfStudent(models.TextChoices):
-        UNDER_COURSE = '0 курс', _('Подготовительный курс')
-        FIRST_COURSE = '1 курс', _('Первый курс')
-        SECOND_COURSE = '2 курс', _('Второй курс')
-        THIRD_COURSE = '3 курс', _('Третий курс')
-        FOURTH_COURSE = '4 курс', _('Четвертый курс')
-        FIFTH_COURSE = '5 курс', _('Пятый курс')
-
-    course_numbers = models.CharField(max_length=10, choices=CoursesOfStudent.choices,
-                                      default=CoursesOfStudent.FIRST_COURSE )
-
-    program_degree = models.ForeignKey(Degree, on_delete=models.CASCADE, related_name="coursenumbers")

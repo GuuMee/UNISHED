@@ -2,41 +2,13 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
-class Week(models.Model):
-
-    class WeekOfStudy(models.TextChoices):
-        ODD_WEEK = 'Нечетная н.', _('Нч. неделя')
-        EVEN_WEEK = 'Четная н.', _('Чт. неделя')
-
-    week_of_study = models.CharField(max_length=20, choices=WeekOfStudy.choices, default=WeekOfStudy.ODD_WEEK)
-
-
-class DayStudy(models.Model):
-
-    days_of_week = models.ForeignKey(Week, on_delete=models.CASCADE, related_name='studydays')
-
-
-class Shift(models.Model):
-
-    class ShiftOfStudy(models.TextChoices):
-        FIRST_SHIFT = '1 смена', _('Первая смена')
-        SECOND_SHIFT = '2 смена', _('Вторая смена')
-        EVENING_SHIFT = 'Вч. смена', _('Вечерняя смена')
-
-    name_of_shift = models.CharField(max_length=20, choices=ShiftOfStudy.choices,
-                                     default=ShiftOfStudy.FIRST_SHIFT)
-
-
-class CourseStudent(models.Model):
-    degree_name = models.ForeignKey("univer_structure.Degree", on_delete=models.CASCADE, related_name='students_degree')
-    course_number = models.ForeignKey("univer_structure.CourseNumber", on_delete=models.CASCADE,
-                                                                       related_name="students_course")
-    group_number = models.ForeignKey("univer_structure.Group", on_delete=models.CASCADE, related_name="students_in_gr")
-
-
 class LectorAttachedDiscipline(models.Model):
     lector = models.ForeignKey("univer_structure.Lector", on_delete=models.CASCADE)
     discipline = models.ForeignKey("univer_structure.Discipline", on_delete=models.CASCADE)
+
+
+class CourseStudent(models.Model):
+    group_number = models.ForeignKey("univer_structure.Group", on_delete=models.CASCADE, related_name="students_in_gr")
 
 
 class CourseScheduleItem(models.Model):
@@ -59,13 +31,25 @@ class CourseScheduleItem(models.Model):
         FRIDAY = 'Пятница', _('Пт')
         SATURDAY = 'Суббота', _('Сб')
 
+    class ShiftOfStudy(models.TextChoices):
+        FIRST_SHIFT = '1 смена', _('Первая смена')
+        SECOND_SHIFT = '2 смена', _('Вторая смена')
+        EVENING_SHIFT = 'Вч. смена', _('Вечерняя смена')
+
+    class WeekOfStudy(models.TextChoices):
+        ODD_WEEK = 'Нечетная н.', _('Нч. неделя')
+        EVEN_WEEK = 'Четная н.', _('Чт. неделя')
+
+    week_of_study = models.CharField(max_length=20, choices=WeekOfStudy.choices, default=WeekOfStudy.ODD_WEEK)
+    name_of_shift = models.CharField(max_length=20, choices=ShiftOfStudy.choices,
+                                     default=ShiftOfStudy.FIRST_SHIFT)
     day = models.CharField(max_length=20, choices=DayOfStudy.choices)
     times_of_study = models.CharField(max_length=30, choices=TimesOfStudy.choices)
-    auditorium_of_course = models.ForeignKey("univer_structure.Auditorium", on_delete=models.CASCADE,
+    auditorium = models.ForeignKey("univer_structure.Auditorium", on_delete=models.CASCADE,
                                              related_name='course_auditorium')
-    lector_of_course = models.ForeignKey("univer_structure.Lector", on_delete=models.CASCADE,
+    lector = models.ForeignKey("univer_structure.Lector", on_delete=models.CASCADE,
                                          related_name='course_lector')
-    discipline_of_course = models.ForeignKey("univer_structure.Discipline", on_delete=models.CASCADE,
+    discipline = models.ForeignKey("univer_structure.Discipline", on_delete=models.CASCADE,
                                              related_name='course_discipline')
-    students_course = models.ForeignKey(CourseStudent, on_delete=models.CASCADE, related_name='course_students')
+    group = models.ForeignKey(CourseStudent, on_delete=models.CASCADE, related_name='course_students')
 
