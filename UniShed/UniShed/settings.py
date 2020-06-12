@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'login_user',
     'univer_structure',
     'schedule',
+    'multiselectfield',
+
 
 ]
 

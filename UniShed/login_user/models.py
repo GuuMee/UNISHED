@@ -14,9 +14,9 @@ class UserProfileInfo(models.Model): #this class inherit from models.Model
 
     #additional
     middle_name = models.CharField(max_length=30, verbose_name=_("Отчество"))
-    birth_date = models.DateField(null=False, blank=False, verbose_name=_("Дата рождения"))
-    phone = PhoneNumberField(null=False, blank=False, unique=True, verbose_name=_("Телефон"))
+    birth_date = models.DateField(null=True, blank=True, verbose_name=_("Дата рождения"))
+    phone = PhoneNumberField(null=True, blank=True, unique=True, verbose_name=_("Телефон"))
 
     def __str__(self):
-        return self.user.username
+        return self.user.last_name
 
