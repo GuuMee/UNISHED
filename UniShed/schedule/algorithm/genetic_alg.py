@@ -3,7 +3,7 @@ import random as rnd
 
 from univer_structure.models import Auditorium, Lector, Discipline as DisciplineModel, Department as DepartmentModel, \
     Group as GroupModel, Profile as ProfileModel, Specialty as SpecialtyModel, Faculty as FacultyModel
-from schedule.models import Times, DisciplineLessons as DisciplineLessonsModel
+from schedule.models import Times, DisciplineLessons as DisciplineLessonsModel, CourseScheduleItem
 
 POPULATION_SIZE = 5
 NUMB_OF_ELITE_SCHEDULES = 1
@@ -19,9 +19,13 @@ class DBMgr:
         self._disciplines = self.select_disciplines()
         self._depts = self.select_depts()
         self._groups = self.select_groups()
-        self._profiles = self.select_profiles()
-        self._specialties = self.select_specialties()
-        self._faculties = self.select_faculties()
+        # self._profiles = self.select_profiles()
+        self._profiles = []
+        # self._specialties = self.select_specialties()
+        self._specialties = []
+        # self._faculties = self.select_faculties()
+        self._faculties = []
+        self._class_types = [t.value for t in CourseScheduleItem.TypesOfClass]
 
         self._numberOfClasses = 0
 
@@ -55,14 +59,14 @@ class DBMgr:
         rooms = Auditorium.objects.all()
         return_rooms = []
         for room in rooms:
-            return_rooms.append(Room(room.name, room.capacity))
+            return_rooms.append(Room(room.id, room.name, room.capacity, room.dept.id))
         return return_rooms
 
     def select_meeting_times(self):
         meeting_times = Times.objects.all()
         return_meeting_times = []
         for time in meeting_times:
-            return_meeting_times.append(MeetingTime(time.id, time.times))
+            return_meeting_times.append(MeetingTime(time.id, time.time, time.day, time.week_type))
         return return_meeting_times
 
     def select_instructors(self):
@@ -72,16 +76,67 @@ class DBMgr:
             return_instructors.append(Instructor(instructor.id, instructor.profile.user.last_name))
         return return_instructors
 
+    def select_depts(self):
+        depts = DepartmentModel.objects.filter(disciplines__disciplinelessons__isnull=False).distinct()
+        returnDepts = []
+        for dept in depts:
+            returnDepts.append(Department(dept.id, self.select_dept_disciplines(dept.name)))
+        return returnDepts
+
+    def select_dept_disciplines(self, deptName):
+        ds_numbers = DisciplineLessonsModel.objects.filter(discipline__department__name=deptName).values_list('id', flat=True)
+        return_value = []
+        for ds in self._disciplines:
+            if ds.get_number() in ds_numbers:
+                return_value.append(ds)
+        return return_value
+
+    def select_disciplines(self):
+        disciplines = DisciplineLessonsModel.objects.all()
+        return_disciplines = []
+        for ds in disciplines:
+            return_disciplines.append(Discipline(
+                ds.id,
+                ds.discipline.name,
+                ds.discipline.department.id,
+                ds.lecture,
+                ds.practice,
+                ds.laboratory,
+                25,  # needs to be changed to ds.group.students.count()
+            ))
+        return return_disciplines
+
     def select_groups(self):
         groups = GroupModel.objects.all()
-        lector = Lector.objects.filter(disciplines__lectordisciplines__profile_id=1)
-        returngroups = []
-        for gr in groups:
-            returngroups.append(Group(gr.id, gr.name, gr.students, self.select_group_disciplines(gr.id,
-                                                                   self.select_group_lectors(gr.id))))
-        return returngroups
+        return_groups = []
+        for group in groups:
+            db_disciplines = DisciplineLessonsModel.objects.filter(group=group).values_list('id', flat=True)
+            disciplines = []
+            for ds in self._disciplines:
+                if ds.get_number() in db_disciplines:
+                    disciplines.append(ds)
+            return_groups.append(Group(
+                id=group.id,
+                name=group.name,
+                n_students=25,  # needs to be changed to group.students.count()
+                disciplines=disciplines)
+            )
+        return return_groups
 
+    def select_discipline_instructor(self, courseNumber):
+        lector = DisciplineLessonsModel.objects.get(id=courseNumber).lector
+        returnValue = None
+        for i in range(0, len(self._instructors)):
+            if self._instructors[i].get_id() == lector.id:
+                returnValue = self._instructors[i]
+        return returnValue
 
+    def get_dept_rooms(self, dept):
+        rooms = []
+        for room in self._rooms:
+            if room.get_department() == dept:
+                rooms.append(room)
+        return rooms
 
     def select_group_discipline_lector(self ):
         discip = DisciplineLessonsModel.objects.all()
@@ -114,6 +169,20 @@ class DBMgr:
     def get_departments(self):
         return self._depts
 
+    def get_odd_meeting_times(self):
+        times = []
+        for time in self._meetingTimes:
+            if time.get_week() == Times.WeekOfStudy.ODD_WEEK:
+                times.append(time)
+        return times
+
+    def get_even_meeting_times(self):
+        times = []
+        for time in self._meetingTimes:
+            if time.get_week() == Times.WeekOfStudy.EVEN_WEEK:
+                times.append(time)
+        return times
+
     def get_meetingTimes(self):
         return self._meetingTimes
 
@@ -132,7 +201,11 @@ class DBMgr:
     def get_faculties(self):
         return self._faculties
 
-class ScheduleItem:
+    def get_class_types(self):
+        return self._class_types
+
+
+class Schedule:
 
     def __init__(self, data):
         self.data = data
@@ -150,26 +223,55 @@ class ScheduleItem:
         return self._numbOfConflicts
 
     def get_fitness(self):  # the fitness for this schedule
-        if (self._isFitnessChanged == True):
+        if self._isFitnessChanged == True:
             self._fitness = self.calculate_fitness()
             self._isFitnessChanged = False
         return self._fitness
 
-    def initialize(self):
-        groups = self.data.get_groups()  # data to pick up all the departments
-        for gr in groups:
-            courses = gr.get_courses()  # pick up the disciplines in each department
-            for ds in courses:
-                newClass = Class(self._classNumb, gr[ds],
-                                 courses[ds])  # for each course we instantiate a new class
-                self._classNumb += 1
+    def create_classes(self, group, discipline, class_type):
+        classes = []
+        hours = getattr(discipline, class_type)
+        lector = self.data.select_discipline_instructor(discipline.get_number())
+        class_1 = Class(self._classNumb, group, discipline, lector, class_type)
+        rooms = self.data.get_dept_rooms(discipline.get_department())
+        selected_room = rooms[rnd.randrange(0, len(rooms))]
+        class_1.set_room(selected_room)
+        if hours == 18:
+            meeting_times = self.data.get_meetingTimes()
+            class_1.set_meetingTime(meeting_times[rnd.randrange(0, len(meeting_times))])
+            classes.append(class_1)
+            self._classNumb += 1
+        elif hours >= 36:
+            odd_meeting_times = self.data.get_odd_meeting_times()
+            class_1.set_meetingTime(odd_meeting_times[rnd.randrange(0, len(odd_meeting_times))])
+            classes.append(class_1)
+            self._classNumb += 1
 
-                newClass.set_meetingTime(
-                    self.data.get_meetingTimes()[rnd.randrange(0, len(self.data.get_meetingTimes()))])
-                newClass.set_room(self.data.get_rooms()[rnd.randrange(0, len(self.data.get_rooms()))])
-                newClass.set_instructor(
-                    disciplines[j].get_instructors()[rnd.randrange(0, len(disciplines[j].get_instructors()))])
-                self._classes.append(newClass)  # we put the "newClass" instance in this ScheduleItem
+            class_2 = Class(self._classNumb, group, discipline, lector, class_type)
+            class_2.set_room(selected_room)
+            even_meeting_times = self.data.get_even_meeting_times()
+            class_2.set_meetingTime(odd_meeting_times[rnd.randrange(0, len(even_meeting_times))])
+            classes.append(class_2)
+            self._classNumb += 1
+
+        if hours == 54:
+            class_3 = Class(self._classNumb, group, discipline, lector, class_type)
+            class_3.set_room(selected_room)
+            meeting_times = self.data.get_meetingTimes()
+            class_3.set_meetingTime(meeting_times[rnd.randrange(0, len(meeting_times))])
+            classes.append(class_3)
+            self._classNumb += 1
+
+        return classes
+
+    def initialize(self):
+        groups = self.data.get_groups()
+        for group in groups:
+            for ds in group.get_disciplines():
+                for class_type in self.data.get_class_types():
+                    if getattr(ds, class_type):
+                        classes = self.create_classes(group, ds, class_type)
+                        self._classes += classes
         return self
 
     def calculate_fitness(self):  # calculate and return the fitness
@@ -177,22 +279,27 @@ class ScheduleItem:
         classes = self.get_classes()
 
         for i in range(0, len(classes)):
-            if (classes[i].get_room().get_seatingCapacity() < classes[
-                i].get_discipline().get_maxNumbOfStudents()):  # get_maxNumbOfStudents I deleted
+            if (classes[i].get_room().get_seatingCapacity() < classes[i].get_discipline().get_num_students()):
                 self._numbOfConflicts += 1
 
-            for j in range(0, len(classes)):
-                if (j >= i):
-                    if (classes[i].get_meetingTime() == classes[j].get_meetingTime() and
-                            classes[i].get_id() != classes[j].get_id()):
+            for j in range(i+1, len(classes)):
+                if (classes[i].get_discipline() == classes[j].get_discipline() and
+                    classes[i].get_class_type() == classes[j].get_class_type() and not
+                        classes[i].get_room() != classes[j].get_room()):
+                    self._numbOfConflicts += 1
+                if (classes[i].get_meetingTime() == classes[j].get_meetingTime() and
+                        classes[i].get_id() != classes[j].get_id()):
 
-                        # if the room is scheduled for more than 1 class at the same meeting time
-                        if (classes[i].get_room() == classes[j].get_room()):
-                            self._numbOfConflicts += 1
+                    # if the room is scheduled for more than 1 class at the same meeting time
+                    if (classes[i].get_room() == classes[j].get_room()):
+                        self._numbOfConflicts += 1
 
-                        # if the instructor is scheduled to teach more than one class at the same meeting time
-                        if (classes[i].get_instructor() == classes[j].get_instructor()):
-                            self._numbOfConflicts += 1
+                    # if the instructor is scheduled to teach more than one class at the same meeting time
+                    if (classes[i].get_instructor() == classes[j].get_instructor()):
+                        self._numbOfConflicts += 1
+
+                    if (classes[i].get_group() == classes[j].get_group()):
+                        self._numbOfConflicts += 1
 
         return 1 / ((1.0 * self._numbOfConflicts + 1))
 
@@ -204,6 +311,10 @@ class ScheduleItem:
         returnValue += str(self._classes[len(self._classes) - 1])
         return returnValue
 
+    def save(self):
+        for klass in self._classes:
+            klass.save()
+
 
 class Population:
     def __init__(self, size, data):
@@ -214,7 +325,7 @@ class Population:
         for i in range(0, size):
             # giving a size of the population we instantiate schedules
             # and call initialize method on each and put them in schedules
-            self._schedules.append(ScheduleItem(self.data).initialize())
+            self._schedules.append(Schedule(self.data).initialize())
 
     def get_schedules(self):  # ???what can we use instead of this get method???
         return self._schedules
@@ -233,8 +344,9 @@ class GeneticAlgorithm:
             crossover_pop.get_schedules().append(pop.get_schedules()[i])
         i = NUMB_OF_ELITE_SCHEDULES
         while i < POPULATION_SIZE:
-            schedule1 = self._select_tournament_population(pop).get_schedules()[0]
-            schedule2 = self._select_tournament_population(pop).get_schedules()[1]
+            tournament_pop = self._select_tournament_population(pop)
+            schedule1 = tournament_pop.get_schedules()[0]
+            schedule2 = tournament_pop.get_schedules()[1]
             crossover_pop.get_schedules().append(self._crossover_schedule(schedule1, schedule2))
             i += 1
         return crossover_pop
@@ -245,19 +357,19 @@ class GeneticAlgorithm:
         return population
 
     def _crossover_schedule(self, schedule1, schedule2):
-        crossoverScheduleItem = ScheduleItem(self.data).initialize()
-        for i in range(0, len(crossoverScheduleItem.get_classes())):
+        crossoverSchedule = Schedule(self.data).initialize()
+        for i in range(0, len(crossoverSchedule.get_classes())):
             if (rnd.random() > 0.5):
-                crossoverScheduleItem.get_classes()[i] = schedule1.get_classes()[i]
+                crossoverSchedule.get_classes()[i] = schedule1.get_classes()[i]
             else:
-                crossoverScheduleItem.get_classes()[i] = schedule2.get_classes()[i]
-        return crossoverScheduleItem
+                crossoverSchedule.get_classes()[i] = schedule2.get_classes()[i]
+        return crossoverSchedule
 
-    def _mutate_schedule(self, mutateScheduleItem):
-        schedule = ScheduleItem(self.data).initialize()
-        for i in range(0, len(mutateScheduleItem.get_classes())):
-            if (MUTATION_RATE > rnd.random()): mutateScheduleItem.get_classes()[i] = schedule.get_classes()[i]
-        return mutateScheduleItem
+    def _mutate_schedule(self, mutateSchedule):
+        schedule = Schedule(self.data).initialize()
+        for i in range(0, len(mutateSchedule.get_classes())):
+            if MUTATION_RATE > rnd.random(): mutateSchedule.get_classes()[i] = schedule.get_classes()[i]
+        return mutateSchedule
 
     def _select_tournament_population(self, pop):
         tournament_pop = Population(0, self.data)
@@ -287,15 +399,26 @@ class Course:
 
 class Discipline:
 
-    def __init__(self, id, name):
-        self._id = id  # number of the course
-        self._name = name  # name of the course
+    def __init__(self, id, name, department, lecture, practice, laboratory, n_students):
+        self._id = id
+        self._name = name
+        self._department = department
+        self.lecture = lecture
+        self.practice = practice
+        self.laboratory = laboratory
+        self.n_students = n_students
 
     def get_number(self):
         return self._id
 
     def get_name(self):
         return self._name
+
+    def get_department(self):
+        return self._department
+
+    def get_num_students(self):
+        return self.n_students
 
     def __str__(self):
         return self._name
@@ -322,28 +445,23 @@ class DisciplineClass:
 
 
 class Group:
-    def __init__(self, id, name, n_students, disciplines, lectors):
+    def __init__(self, id, name, n_students, disciplines):
         self.id = id
         self.name = name
         self.students = n_students
         self.disciplines = disciplines
-        self.lectors = lectors
-
 
     def get_id(self):
         return self.id
 
-    def get_group(self):
+    def get_name(self):
         return self.name
 
-    def get_number_of_studetns(self):
+    def get_number_of_students(self):
         return self.students
 
     def get_disciplines(self):
         return self.disciplines
-
-    def get_lectors(self):
-        return self.lectors
 
 
 class Instructor:
@@ -363,9 +481,14 @@ class Instructor:
 
 
 class Room:
-    def __init__(self, number, seatingCapacity):
+    def __init__(self, id, number, seatingCapacity, department):
+        self._id = id
         self._number = number
         self._seatingCapacity = seatingCapacity
+        self._department = department
+
+    def get_id(self):
+        return self._id
 
     def get_number(self):
         return self._number
@@ -373,15 +496,27 @@ class Room:
     def get_seatingCapacity(self):
         return self._seatingCapacity
 
+    def get_department(self):
+        return self._department
+
 
 class MeetingTime:
-    def __init__(self, id, time):
+    def __init__(self, id, time, day, week):
         self._id = id
         self._time = time
+        self._day = day
+        self._week = week
 
     def get_id(self): return self._id
 
     def get_time(self): return self._time
+
+    def get_day(self): return self._day
+
+    def get_week(self): return self._week
+
+    def __str__(self):
+        return '{}: {}, {}'.format(self._day, self._time, self._week)
 
 
 class Department:
@@ -431,13 +566,14 @@ class Faculty:
 
 class Class:  # Пара
 
-    def __init__(self, id, group, discipline, instructor):
+    def __init__(self, id, group, discipline, instructor, class_type):
         self._id = id
         self._discipline = discipline
         self._group = group
         self._instructor = instructor
         self._meetingTime = None
         self._room = None
+        self._class_type = class_type
 
     def get_id(self):
         return self._id
@@ -462,6 +598,19 @@ class Class:  # Пара
 
     def set_room(self, room):
         self._room = room
+
+    def get_class_type(self):
+        return self._class_type
+
+    def save(self):
+        CourseScheduleItem.objects.create(
+            class_type=self._class_type,
+            time_id=self._meetingTime.get_id(),
+            auditorium_id=self._room.get_id(),
+            lector_id=self._instructor.get_id(),
+            discipline=DisciplineModel.objects.get(disciplinelessons__group_id=self._group.get_id(), disciplinelessons__id=self._discipline.get_number()),
+            group_id=self._group.get_id()
+        )
 
     def __str__(self):
         return str(self._meetingTime.get_id()) + "," + str(self._discipline.get_number()) + "," + \
@@ -499,17 +648,17 @@ class DisplayMgr:  # display manager class
         print(availableDeptsTable)
 
     def print_discipline(self):
-        availableCourseTable = prettytable.PrettyTable(['id', 'course #', 'max # of students', 'instructors'])
+        availableCourseTable = prettytable.PrettyTable(['id', 'course', 'instructors'])
         disciplines = self.data.get_disciplines()
         for i in range(0, len(disciplines)):
-            instructors = disciplines[i].get_instructors()
+            # instructors = disciplines[i].get_instructors()
+            instructors = [self.data.select_discipline_instructor(disciplines[i].get_number())]
             tempStr = ""
             for j in range(0, len(instructors) - 1):
                 tempStr += instructors[j].__str__() + ", "
             tempStr += instructors[len(instructors) - 1].__str__()
             availableCourseTable.add_row(
-                [disciplines[i].get_number(), disciplines[i].get_name(), str(disciplines[i].get_maxNumbOfStudents()),
-                 tempStr])  # get_maxNumbOfStudents()
+                [disciplines[i].get_number(), disciplines[i].get_name(), tempStr])
         print(availableCourseTable)
 
     def print_instructor(self):
@@ -530,7 +679,7 @@ class DisplayMgr:  # display manager class
         availableMeetingTimeTable = prettytable.PrettyTable(['id', 'Meeting Time'])
         meetingTimes = self.data.get_meetingTimes()
         for i in range(0, len(meetingTimes)):
-            availableMeetingTimeTable.add_row([meetingTimes[i].get_id(), meetingTimes[i].get_time()])
+            availableMeetingTimeTable.add_row([meetingTimes[i].get_id(), str(meetingTimes[i])])
         print(availableMeetingTimeTable)
 
     def print_generation(self, population):  # prints generation
@@ -545,17 +694,18 @@ class DisplayMgr:  # display manager class
     def print_schedule_as_table(self, schedule):  # Prints the schedule as a table
         classes = schedule.get_classes()
         table = prettytable.PrettyTable(
-            ['Class #', 'Dept', 'Course (number, max # of students)', 'Room (Capacity)', 'Instructor (Id)',
+            ['Class # (type)', 'Group', 'Course (number, # of students)', 'Room (Capacity)', 'Instructor (Id)',
              'Meeting Time (Id)'])
         for i in range(0, len(classes)):
             table.add_row(
-                [str(i + 1), str(classes[i].get_dept().get_name()), str(classes[i].get_discipline().get_name()) + " (" +
-                 str(classes[i].get_discipline().get_number()) + ", " +
-                 str(classes[i].get_discipline().get_maxNumbOfStudents()) + ")",
+                [str(i + 1) + "(" + classes[i].get_class_type() + ")",
+                 str(classes[i].get_group().get_name()),
+                 str(classes[i].get_discipline().get_name()) + " (" + str(classes[i].get_discipline().get_number()) + ", " +
+                 str(classes[i].get_discipline().get_num_students()) + ")",
                  str(classes[i].get_room().get_number()) + " (" + str(
                      classes[i].get_room().get_seatingCapacity()) + ")",
                  classes[i].get_instructor().get_name() + " (" + str(classes[i].get_instructor().get_id()) + ")",
-                 classes[i].get_meetingTime().get_time() + " (" + str(classes[i].get_meetingTime().get_id()) + ")"])
+                 str(classes[i].get_meetingTime()) + " (" + str(classes[i].get_meetingTime().get_id()) + ")"])
         print(table)
 
 
@@ -579,7 +729,7 @@ def run():
     displayMgr.print_schedule_as_table(population.get_schedules()[0])
 
     geneticAlgorithm = GeneticAlgorithm(data)
-    while (population.get_schedules()[0].get_fitness() == 1.0):
+    while population.get_schedules()[0].get_fitness() < 1.0:
         generationNumber += 1
         print("\n> Generation # " + str(generationNumber))
 
@@ -589,5 +739,7 @@ def run():
         population.get_schedules().sort(key=lambda x: x.get_fitness(), reverse=True)
         displayMgr.print_generation(population)
         displayMgr.print_schedule_as_table(population.get_schedules()[0])
+
+    population.get_schedules()[0].save()
 
     print("\n\n")

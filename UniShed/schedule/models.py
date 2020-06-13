@@ -57,6 +57,18 @@ class CourseStudent(models.Model):
 
 class Times(models.Model):
 
+    class DayOfStudy(models.TextChoices):
+        MONDAY = 'Понедельник', _('Пн')
+        TUESDAY = 'Вторник', _('Вт')
+        WEDNESDAY = 'Среда', _('Ср')
+        THURSDAY = 'Четверг', _('Чт')
+        FRIDAY = 'Пятница', _('Пт')
+        SATURDAY = 'Суббота', _('Сб')
+
+    class WeekOfStudy(models.TextChoices):
+        ODD_WEEK = 'Нечетная н.', _('Нч. неделя')
+        EVEN_WEEK = 'Четная н.', _('Чт. неделя')
+
     class TimesOfStudy(models.TextChoices):
         FIRST_CLASS_TIME = '8:00-9:30', _('1.ПАРА 8:00-9:30')
         SECOND_CLASS_TIME = '9:40-11:10', _('2.ПАРА 9:40-11:10')
@@ -67,10 +79,12 @@ class Times(models.Model):
         SEVENTH_CLASS_TIME = '18:00-19:30', _('7.ПАРА 18:00-19:30')
         EIGHTH_CLASS_TIME = '19:40-21:10', _('8.ПАРА 19:40-21:10')
 
-    times = models.CharField(max_length=30, choices=TimesOfStudy.choices)
+    time = models.CharField(max_length=30, choices=TimesOfStudy.choices)
+    day = models.CharField(max_length=30, choices=DayOfStudy.choices)
+    week_type = models.CharField(max_length=30, choices=WeekOfStudy.choices)
 
     def __str__(self):
-        return self.times
+        return '{}: {}, {}'.format(self.day, self.time, self.week_type)
 
 
 class CourseScheduleItem(models.Model):
@@ -87,21 +101,20 @@ class CourseScheduleItem(models.Model):
         ONCE_A_WEEK = '1 раз в неделю', _('1р. в нед.')
         BETWEEN_WEEKS = 'Через неделю', _('1р. в 2 нед.')
 
-    class TypesOfDiscipline(models.TextChoices):
-        LECTURE = 'Лк. зн.', _('Лекционное. занятие')
-        PRACTICE = 'Пр. зн.', _('Практическое. занятие.')
-        LABORATORY = 'Лаб. зн.', _('Лабораторное. занятие.')
+    class TypesOfClass(models.TextChoices):
+        LECTURE = 'lecture', _('Лекционное. занятие')
+        PRACTICE = 'practice', _('Практическое. занятие.')
+        LABORATORY = 'laboratory', _('Лабораторное. занятие.')
 
-    type_discipline = models.CharField(max_length=10, choices=TypesOfDiscipline.choices,
-                                       default=TypesOfDiscipline.LECTURE)
-    day = models.CharField(max_length=20, choices=DayOfStudy.choices)
+    class_type = models.CharField(max_length=10, choices=TypesOfClass.choices, default=TypesOfClass.LECTURE)
+    time = models.ForeignKey(Times, on_delete=models.PROTECT, related_name='schedule_items')
     auditorium = models.ForeignKey("univer_structure.Auditorium", on_delete=models.CASCADE,
                                              related_name='course_auditorium')
     lector = models.ForeignKey("univer_structure.Lector", on_delete=models.CASCADE,
                                          related_name='course_lector')
     discipline = models.ForeignKey("univer_structure.Discipline", on_delete=models.CASCADE,
                                              related_name='course_discipline')
-    group = models.ForeignKey(CourseStudent, on_delete=models.CASCADE, related_name='course_students')
+    group = models.ForeignKey("univer_structure.Group", on_delete=models.CASCADE, related_name='course_students')
     potok = models.BooleanField(default=False)
     half_group = models.BooleanField(default=True)
     quantity_z = models.PositiveIntegerField(default=18)

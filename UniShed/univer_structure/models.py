@@ -130,7 +130,7 @@ class Discipline(models.Model):
 
 
     name = models.CharField(max_length=200, unique=True)
-    department = models.ManyToManyField(Department, related_name="disciplinedepts")
+    department = models.ForeignKey(Department, related_name="disciplines", on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
