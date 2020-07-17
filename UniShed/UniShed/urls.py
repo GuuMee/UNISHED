@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from login_user import views
+
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
@@ -24,7 +25,13 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('admin/', admin.site.urls),
     path('user/', include('login_user.urls')),
+    path('schedule/', include('schedule.urls')),
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
-    path('logout/', views.user_logout, name = 'logout'),
-    path('special/', views.special, name = 'special')
+    path('logout/', views.user_logout, name='logout'),
+    path('special/', views.special, name='special'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+
+admin.site.site_header = "UNISHED Администрирование"
+admin.site.site_title = "UNISHED База Данных"
+admin.site.index_title = "Система Базы Данных UNISHED"

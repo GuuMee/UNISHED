@@ -1,0 +1,1314 @@
+{% extends 'login_user/base.html' %}
+{% load render_table from django_tables2 %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/main.css' %}">
+{% block body_block %}
+    <div class="jumbotron">
+        <h1>Занятость преподавателей</h1>
+    </div>
+
+    <div class="container">
+        <div class="panel-heading">
+            <ul class="nav nav-tabs">
+              <li class="nav-item">
+                <a class="nav-link active" href="#odd-week" data-toggle="tab">1 неделя</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#even-week" data-toggle="tab">2 неделя</a>
+              </li>
+            </ul>
+        </div>
+
+        <div class="panel-body" >
+            <div class="tab-content" id="change_by_select">
+                <div class="tab-pane fade-in active" id="odd-week">
+                    <div id="accordion">
+                      <div class="card">
+                        <div class="card-header" id="headingOne">
+                          <h5 class="mb-0">
+                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                              Понедельник
+                            </button>
+                          </h5>
+                        </div>
+
+                        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                          <div class="card-body">
+                            <table class="table table-bordered table-hover table-sm" >
+                              <thead class="thead-light">
+                                <tr>
+                                  <th scope="col" >Время</th>
+                                    {% for lc in lectors %}
+                                        <th scope="col" class="rotate-cell"> {{ lc.profile.user.last_name }}</th>
+                                    {% endfor %}
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <th scope="row">8:00-9:30</th>
+                                    {% for lc in odd_monday%}
+                                            {% if "8:00-9:30" in lc.times %}
+                                                <td class="btn-danger"></td>
+                                            {% else %}
+                                                <td class="btn-info"></td>
+                                            {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">9:40-11:10</th>
+                                  {% for lc in odd_monday%}
+                                        {% if "9:40-11:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">11:20-12:50</th>
+                                  {% for lc in odd_monday%}
+                                        {% if "11:20-12:50" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">13:00-14:30</th>
+                                  {% for lc in odd_monday%}
+                                        {% if "13:00-14:30" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">14:40-16:10</th>
+                                  {% for lc in odd_monday%}
+                                        {% if "14:40-16:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">16:20-17:50</th>
+                                  {% for lc in odd_monday%}
+                                        {% if "16:20-17:50" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">18:00-19:30</th>
+                                  {% for lc in odd_monday%}
+                                        {% if "18:00-19:30" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">19:40-21:10</th>
+                                  {% for lc in odd_monday%}
+                                        {% if "19:40-21:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card">
+                        <div class="card-header" id="headingTwo">
+                          <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                              Вторник
+                            </button>
+                          </h5>
+                        </div>
+                        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                          <div class="card-body">
+                              <table class="table table-bordered table-hover table-sm" >
+                              <thead class="thead-light">
+                                <tr>
+                                  <th scope="col">Время</th>
+                                    {% for lc in lectors %}
+                                        <th scope="col" class="rotate-cell"> {{ lc.profile.user.last_name }}</th>
+                                    {% endfor %}
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <th scope="row">8:00-9:30</th>
+                                    {% for lc in odd_tuesday%}
+                                            {% if "8:00-9:30" in lc.times %}
+                                                <td class="btn-danger"></td>
+                                            {% else %}
+                                                <td class="btn-info"></td>
+                                            {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">9:40-11:10</th>
+                                  {% for lc in odd_tuesday%}
+                                        {% if "9:40-11:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">11:20-12:50</th>
+                                  {% for lc in odd_tuesday%}
+                                        {% if "11:20-12:50" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">13:00-14:30</th>
+                                  {% for lc in odd_tuesday%}
+                                        {% if "13:00-14:30" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">14:40-16:10</th>
+                                  {% for lc in odd_tuesday%}
+                                        {% if "14:40-16:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">16:20-17:50</th>
+                                  {% for lc in odd_tuesday%}
+                                        {% if "16:20-17:50" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">18:00-19:30</th>
+                                  {% for lc in odd_tuesday%}
+                                        {% if "18:00-19:30" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">19:40-21:10</th>
+                                  {% for lc in odd_tuesday%}
+                                        {% if "19:40-21:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card">
+                        <div class="card-header" id="headingThree">
+                          <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                              Среда
+                            </button>
+                          </h5>
+                        </div>
+                        <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+                          <div class="card-body">
+                              <table class="table table-bordered table-hover table-sm" >
+                              <thead class="thead-light">
+                                <tr>
+                                  <th scope="col">Время</th>
+                                    {% for lc in lectors %}
+                                        <th scope="col" class="rotate-cell"> {{ lc.profile.user.last_name }}</th>
+                                    {% endfor %}
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <th scope="row">8:00-9:30</th>
+                                    {% for lc in odd_wednesday%}
+                                            {% if "8:00-9:30" in lc.times %}
+                                                <td class="btn-danger"></td>
+                                            {% else %}
+                                                <td class="btn-info"></td>
+                                            {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">9:40-11:10</th>
+                                  {% for lc in odd_wednesday%}
+                                        {% if "9:40-11:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">11:20-12:50</th>
+                                  {% for lc in odd_wednesday%}
+                                        {% if "11:20-12:50" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">13:00-14:30</th>
+                                  {% for lc in odd_wednesday%}
+                                        {% if "13:00-14:30" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">14:40-16:10</th>
+                                  {% for lc in odd_wednesday%}
+                                        {% if "14:40-16:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">16:20-17:50</th>
+                                  {% for lc in odd_wednesday%}
+                                        {% if "16:20-17:50" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">18:00-19:30</th>
+                                  {% for lc in odd_wednesday%}
+                                        {% if "18:00-19:30" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">19:40-21:10</th>
+                                  {% for lc in odd_wednesday%}
+                                        {% if "19:40-21:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                        <div class="card">
+                        <div class="card-header" id="headingFour">
+                          <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseThree">
+                              Четверг
+                            </button>
+                          </h5>
+                        </div>
+                        <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
+                          <div class="card-body">
+                              <table class="table table-bordered table-hover table-sm" >
+                              <thead class="thead-light">
+                                <tr>
+                                  <th scope="col">Время</th>
+                                    {% for lc in lectors %}
+                                        <th scope="col" class="rotate-cell"> {{ lc.profile.user.last_name }}</th>
+                                    {% endfor %}
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <th scope="row">8:00-9:30</th>
+                                    {% for lc in odd_thursday%}
+                                            {% if "8:00-9:30" in lc.times %}
+                                                <td class="btn-danger"></td>
+                                            {% else %}
+                                                <td class="btn-info"></td>
+                                            {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">9:40-11:10</th>
+                                  {% for lc in odd_thursday%}
+                                        {% if "9:40-11:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">11:20-12:50</th>
+                                  {% for lc in odd_thursday%}
+                                        {% if "11:20-12:50" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">13:00-14:30</th>
+                                  {% for lc in odd_thursday%}
+                                        {% if "13:00-14:30" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">14:40-16:10</th>
+                                  {% for lc in odd_thursday%}
+                                        {% if "14:40-16:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">16:20-17:50</th>
+                                  {% for lc in odd_thursday%}
+                                        {% if "16:20-17:50" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">18:00-19:30</th>
+                                  {% for lc in odd_thursday%}
+                                        {% if "18:00-19:30" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">19:40-21:10</th>
+                                  {% for lc in odd_thursday%}
+                                        {% if "19:40-21:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                        <div class="card">
+                        <div class="card-header" id="headingFive">
+                          <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false" aria-controls="collapseThree">
+                              Пятница
+                            </button>
+                          </h5>
+                        </div>
+                        <div id="collapseFive" class="collapse" aria-labelledby="headingFive" data-parent="#accordion">
+                          <div class="card-body">
+                              <table class="table table-bordered table-hover table-sm" >
+                              <thead class="thead-light">
+                                <tr>
+                                  <th scope="col">Время</th>
+                                    {% for lc in lectors %}
+                                        <th scope="col" class="rotate-cell"> {{ lc.profile.user.last_name }}</th>
+                                    {% endfor %}
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <th scope="row">8:00-9:30</th>
+                                    {% for lc in odd_friday%}
+                                            {% if "8:00-9:30" in lc.times %}
+                                                <td class="btn-danger"></td>
+                                            {% else %}
+                                                <td class="btn-info"></td>
+                                            {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">9:40-11:10</th>
+                                  {% for lc in odd_friday%}
+                                        {% if "9:40-11:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">11:20-12:50</th>
+                                  {% for lc in odd_friday%}
+                                        {% if "11:20-12:50" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">13:00-14:30</th>
+                                  {% for lc in odd_friday%}
+                                        {% if "13:00-14:30" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">14:40-16:10</th>
+                                  {% for lc in odd_friday%}
+                                        {% if "14:40-16:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">16:20-17:50</th>
+                                  {% for lc in odd_friday%}
+                                        {% if "16:20-17:50" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">18:00-19:30</th>
+                                  {% for lc in odd_friday%}
+                                        {% if "18:00-19:30" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">19:40-21:10</th>
+                                  {% for lc in odd_friday%}
+                                        {% if "19:40-21:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                        <div class="card">
+                        <div class="card-header" id="headingSix">
+                          <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseSix" aria-expanded="false" aria-controls="collapseThree">
+                              Cуббота
+                            </button>
+                          </h5>
+                        </div>
+                        <div id="collapseSix" class="collapse" aria-labelledby="headingSix" data-parent="#accordion">
+                          <div class="card-body">
+                              <table class="table table-bordered table-hover table-sm" >
+                              <thead class="thead-light">
+                                <tr>
+                                  <th scope="col" class="rotate-cell">Время</th>
+                                    {% for lc in lectors %}
+                                        <th scope="col"> {{ lc.profile.user.last_name }}</th>
+                                    {% endfor %}
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <th scope="row">8:00-9:30</th>
+                                    {% for lc in odd_saturday%}
+                                            {% if "8:00-9:30" in lc.times %}
+                                                <td class="btn-danger"></td>
+                                            {% else %}
+                                                <td class="btn-info"></td>
+                                            {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">9:40-11:10</th>
+                                  {% for lc in odd_saturday%}
+                                        {% if "9:40-11:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">11:20-12:50</th>
+                                  {% for lc in odd_saturday%}
+                                        {% if "11:20-12:50" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">13:00-14:30</th>
+                                  {% for lc in odd_saturday%}
+                                        {% if "13:00-14:30" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">14:40-16:10</th>
+                                  {% for lc in odd_saturday%}
+                                        {% if "14:40-16:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">16:20-17:50</th>
+                                  {% for lc in odd_saturday%}
+                                        {% if "16:20-17:50" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">18:00-19:30</th>
+                                  {% for lc in odd_saturday%}
+                                        {% if "18:00-19:30" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">19:40-21:10</th>
+                                  {% for lc in odd_saturday%}
+                                        {% if "19:40-21:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+
+
+                <div class="tab-pane fade" id="even-week">
+                    <div id="accordion">
+                      <div class="card">
+                        <div class="card-header" id="headingSeven">
+                          <h5 class="mb-0">
+                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseSeven" aria-expanded="true" aria-controls="collapseOne">
+                              Понедельник
+                            </button>
+                          </h5>
+                        </div>
+
+                        <div id="collapseSeven" class="collapse show" aria-labelledby="headingSeven" data-parent="#accordion">
+                          <div class="card-body">
+                            <table class="table table-bordered table-hover table-sm" >
+                              <thead class="thead-light">
+                                <tr>
+                                  <th scope="col">Время</th>
+                                    {% for lc in lectors %}
+                                        <th scope="col" class="rotate-cell vertical-th"> {{ lc.profile.user.last_name }}</th>
+                                    {% endfor %}
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <th scope="row">8:00-9:30</th>
+                                    {% for lc in even_monday%}
+                                            {% if "8:00-9:30" in lc.times %}
+                                                <td class="btn-danger"></td>
+                                            {% else %}
+                                                <td class="btn-info"></td>
+                                            {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">9:40-11:10</th>
+                                  {% for lc in even_monday%}
+                                        {% if "9:40-11:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">11:20-12:50</th>
+                                  {% for lc in even_monday%}
+                                        {% if "11:20-12:50" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">13:00-14:30</th>
+                                  {% for lc in even_monday%}
+                                        {% if "13:00-14:30" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">14:40-16:10</th>
+                                  {% for lc in even_monday%}
+                                        {% if "14:40-16:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">16:20-17:50</th>
+                                  {% for lc in even_monday%}
+                                        {% if "16:20-17:50" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">18:00-19:30</th>
+                                  {% for lc in even_monday%}
+                                        {% if "18:00-19:30" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">19:40-21:10</th>
+                                  {% for lc in even_monday%}
+                                        {% if "19:40-21:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card">
+                        <div class="card-header" id="headingEight">
+                          <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseEight" aria-expanded="false" aria-controls="collapseTwo">
+                              Вторник
+                            </button>
+                          </h5>
+                        </div>
+                        <div id="collapseEight" class="collapse" aria-labelledby="headingEight" data-parent="#accordion">
+                          <div class="card-body">
+                              <table class="table table-bordered table-hover table-sm" >
+                              <thead class="thead-light">
+                                <tr>
+                                  <th >Время</th>
+                                    {% for lc in lectors %}
+                                        <div class="rotate-cell">
+                                            <th class="vertical-th"> {{ lc.profile.user.last_name }}</th>
+                                        </div>
+
+                                    {% endfor %}
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <th scope="row">8:00-9:30</th>
+                                    {% for lc in even_tuesday%}
+                                            {% if "8:00-9:30" in lc.times %}
+                                                <td class="btn-danger"></td>
+                                            {% else %}
+                                                <td class="btn-info"></td>
+                                            {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">9:40-11:10</th>
+                                  {% for lc in even_tuesday%}
+                                        {% if "9:40-11:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">11:20-12:50</th>
+                                  {% for lc in even_tuesday%}
+                                        {% if "11:20-12:50" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">13:00-14:30</th>
+                                  {% for lc in even_tuesday%}
+                                        {% if "13:00-14:30" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">14:40-16:10</th>
+                                  {% for lc in even_tuesday%}
+                                        {% if "14:40-16:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">16:20-17:50</th>
+                                  {% for lc in even_tuesday%}
+                                        {% if "16:20-17:50" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">18:00-19:30</th>
+                                  {% for lc in even_tuesday%}
+                                        {% if "18:00-19:30" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">19:40-21:10</th>
+                                  {% for lc in even_tuesday%}
+                                        {% if "19:40-21:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card">
+                        <div class="card-header" id="headingNine">
+                          <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseNine" aria-expanded="false" aria-controls="collapseThree">
+                              Среда
+                            </button>
+                          </h5>
+                        </div>
+                        <div id="collapseNine" class="collapse" aria-labelledby="headingNine" data-parent="#accordion">
+                          <div class="card-body">
+                              <table class="table table-bordered table-hover table-sm" >
+                              <thead class="thead-light">
+                                <tr>
+                                  <th scope="col" class="rotate-cell">Время</th>
+                                    {% for lc in lectors %}
+                                        <th scope="col"> {{ lc.profile.user.last_name }}</th>
+                                    {% endfor %}
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <th scope="row">8:00-9:30</th>
+                                    {% for lc in even_wednesday%}
+                                            {% if "8:00-9:30" in lc.times %}
+                                                <td class="btn-danger"></td>
+                                            {% else %}
+                                                <td class="btn-info"></td>
+                                            {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">9:40-11:10</th>
+                                  {% for lc in even_wednesday%}
+                                        {% if "9:40-11:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">11:20-12:50</th>
+                                  {% for lc in even_wednesday%}
+                                        {% if "11:20-12:50" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">13:00-14:30</th>
+                                  {% for lc in even_wednesday%}
+                                        {% if "13:00-14:30" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">14:40-16:10</th>
+                                  {% for lc in even_wednesday%}
+                                        {% if "14:40-16:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">16:20-17:50</th>
+                                  {% for lc in even_wednesday%}
+                                        {% if "16:20-17:50" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">18:00-19:30</th>
+                                  {% for lc in even_wednesday%}
+                                        {% if "18:00-19:30" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">19:40-21:10</th>
+                                  {% for lc in even_wednesday%}
+                                        {% if "19:40-21:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                        <div class="card">
+                        <div class="card-header" id="headingTen">
+                          <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTen" aria-expanded="false" aria-controls="collapseThree">
+                              Четверг
+                            </button>
+                          </h5>
+                        </div>
+                        <div id="collapseTen" class="collapse" aria-labelledby="headingTen" data-parent="#accordion">
+                          <div class="card-body">
+                              <table class="table table-bordered table-hover table-sm" >
+                              <thead class="thead-light">
+                                <tr>
+                                  <th scope="col" class="rotate-cell">Время</th>
+                                    {% for lc in lectors %}
+                                        <th scope="col"> {{ lc.profile.user.last_name }}</th>
+                                    {% endfor %}
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <th scope="row">8:00-9:30</th>
+                                    {% for lc in even_thursday%}
+                                            {% if "8:00-9:30" in lc.times %}
+                                                <td class="btn-danger"></td>
+                                            {% else %}
+                                                <td class="btn-info"></td>
+                                            {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">9:40-11:10</th>
+                                  {% for lc in even_thursday%}
+                                        {% if "9:40-11:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">11:20-12:50</th>
+                                  {% for lc in even_thursday%}
+                                        {% if "11:20-12:50" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">13:00-14:30</th>
+                                  {% for lc in even_thursday%}
+                                        {% if "13:00-14:30" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">14:40-16:10</th>
+                                  {% for lc in even_thursday%}
+                                        {% if "14:40-16:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">16:20-17:50</th>
+                                  {% for lc in even_thursday%}
+                                        {% if "16:20-17:50" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">18:00-19:30</th>
+                                  {% for lc in even_thursday%}
+                                        {% if "18:00-19:30" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">19:40-21:10</th>
+                                  {% for lc in even_thursday%}
+                                        {% if "19:40-21:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                        <div class="card">
+                        <div class="card-header" id="headingEleven">
+                          <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseEleven" aria-expanded="false" aria-controls="collapseThree">
+                              Пятница
+                            </button>
+                          </h5>
+                        </div>
+                        <div id="collapseEleven" class="collapse" aria-labelledby="headingEleven" data-parent="#accordion">
+                          <div class="card-body">
+                              <table class="table table-bordered table-hover table-sm" >
+                              <thead class="thead-light">
+                                <tr>
+                                  <th scope="col">Время</th>
+                                    {% for lc in lectors %}
+                                        <th scope="col" class="rotate-cell"> {{ lc.profile.user.last_name }}</th>
+                                    {% endfor %}
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <th scope="row">8:00-9:30</th>
+                                    {% for lc in even_friday%}
+                                            {% if "8:00-9:30" in lc.times %}
+                                                <td class="btn-danger"></td>
+                                            {% else %}
+                                                <td class="btn-info"></td>
+                                            {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">9:40-11:10</th>
+                                  {% for lc in even_friday%}
+                                        {% if "9:40-11:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">11:20-12:50</th>
+                                  {% for lc in even_friday%}
+                                        {% if "11:20-12:50" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">13:00-14:30</th>
+                                  {% for lc in even_friday%}
+                                        {% if "13:00-14:30" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">14:40-16:10</th>
+                                  {% for lc in even_friday%}
+                                        {% if "14:40-16:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">16:20-17:50</th>
+                                  {% for lc in even_friday%}
+                                        {% if "16:20-17:50" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">18:00-19:30</th>
+                                  {% for lc in even_friday%}
+                                        {% if "18:00-19:30" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">19:40-21:10</th>
+                                  {% for lc in even_friday%}
+                                        {% if "19:40-21:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                        <div class="card">
+                        <div class="card-header" id="headingTwelve">
+                          <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseThree">
+                              Cуббота
+                            </button>
+                          </h5>
+                        </div>
+                        <div id="collapseTwelve" class="collapse" aria-labelledby="headingTwelve" data-parent="#accordion">
+                          <div class="card-body">
+                              <table class="table table-bordered table-hover table-sm" >
+                              <thead class="thead-light">
+                                <tr>
+                                  <th scope="col" >Время</th>
+                                    {% for lc in lectors %}
+                                        <th scope="col" class="rotate-cell"> {{ lc.profile.user.last_name }}</th>
+                                    {% endfor %}
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <th scope="row">8:00-9:30</th>
+                                    {% for lc in even_saturday%}
+                                            {% if "8:00-9:30" in lc.times %}
+                                                <td class="btn-danger"></td>
+                                            {% else %}
+                                                <td class="btn-info"></td>
+                                            {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">9:40-11:10</th>
+                                  {% for lc in even_saturday%}
+                                        {% if "9:40-11:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">11:20-12:50</th>
+                                  {% for lc in even_saturday%}
+                                        {% if "11:20-12:50" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                  <th scope="row">13:00-14:30</th>
+                                  {% for lc in even_saturday%}
+                                        {% if "13:00-14:30" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">14:40-16:10</th>
+                                  {% for lc in even_saturday%}
+                                        {% if "14:40-16:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">16:20-17:50</th>
+                                  {% for lc in even_saturday%}
+                                        {% if "16:20-17:50" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">18:00-19:30</th>
+                                  {% for lc in even_saturday%}
+                                        {% if "18:00-19:30" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                              <tr>
+                                  <th scope="row">19:40-21:10</th>
+                                  {% for lc in even_saturday%}
+                                        {% if "19:40-21:10" in lc.times %}
+                                            <td class="btn-danger"></td>
+                                        {% else %}
+                                            <td class="btn-info"></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -7,13 +7,12 @@ from schedule.models import Times, DisciplineLessons, CourseScheduleItem
 # Register your models here.
 
 admin.site.register(DisciplineLessons)
-admin.site.register(Times)
 
 
 @admin.register(CourseScheduleItem)
 class CourseScheduleAdmin(admin.ModelAdmin):
     change_list_template = "schedule/alg.html"
-
+    readonly_fields =["group", "discipline"]
     def get_urls(self):
         urls = super().get_urls()
         my_urls = [
@@ -24,3 +23,15 @@ class CourseScheduleAdmin(admin.ModelAdmin):
     def run_algoritm(self, request):
         run()
         return HttpResponseRedirect("../")
+
+
+@admin.register(Times)
+class Times(admin.ModelAdmin):
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False

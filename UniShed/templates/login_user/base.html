@@ -4,48 +4,76 @@
     <head>
         <meta charset="UTF-8">
         <title>UNISHED </title>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+              integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="{% static 'admin/css/forms.css' %}"/>
         <link rel="stylesheet" type="text/css" href="{% static 'admin/css/base.css' %}"/>
         <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}"/>
         <link rel="stylesheet" href="{% static 'css/main.css' %}">
         {% load bootstrap4 %}
         {% bootstrap_css %}
+
         {% bootstrap_javascript  jquery='full' %}
+
+        <script src="https://kit.fontawesome.com/38b20078fe.js" crossorigin="anonymous"></script>
     </head>
     <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="{% url 'index' %}">UNISHED</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-         <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mynav">
+        <div class="container">
+                <a class="navbar-brand" href="{% url 'index' %}">UNISHED</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+             <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
 
-                {% if user.is_authenticated or user.is_registered %}
-                    <li>
-                        <a class="nav-link" href="{% url 'logout' %}"  >Выйти</a>
-                    </li>
-                {% else %}
-                     <li class="nav-link">
-                        <a href="{% url 'login_user:register' %}" class="nav-link">Регистрация</a>
-                    </li>
-                    <li class="nav-link">
-                        <a href="{% url 'login_user:user_login' %}" class="nav-link">Войти</a>
-                    </li>
-                {% endif %}
+                    {% if user.is_authenticated or user.is_registered %}
+                        {% if user.profile.get_user_type == 'student' %}
+                            <li>
+                                <a class="nav-link" href="{% url 'schedule:student_schedule' %}">Расписание Студента</a>
+                            </li>
+                        {% elif user.profile.get_user_type == 'lector' %}
+                            <li>
+                                <a class="nav-link" href="{% url 'schedule:lector_schedule' %}">Расписание Преподавателя</a>
+                            </li>
+                            {% elif user.is_staff %}
+                            <li>
+                                <a class="nav-link" href="{% url 'schedule:dispatcher_view' %}">Расписание</a>
 
-            </ul>
+                            </li>
+                            <li> <a class="nav-link" href="{% url 'admin:index' %}">База Данных</a></li>
+                        {% endif %}
+                        <li>
+                            <a class="nav-link" href="{% url 'logout' %}"  >Выйти</a>
+                        </li>
+                    {% else %}
+                         <li class="nav-link">
+                            <a href="{% url 'login_user:register' %}" class="nav-link">Регистрация</a>
+                        </li>
+                        <li class="nav-link">
+                            <a href="{% url 'login_user:user_login' %}" class="nav-link">Войти</a>
+                        </li>
+
+                    {% endif %}
+
+                </ul>
+            </div>
         </div>
+
     </nav>
 
-    <div class="container">
-        {% block body_block %}
-        {% endblock %}
-    </div>
+        <div class="container">
+            {% block body_block %}
+            {% endblock %}
+        </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+    {% block javascript %}
+        <script src="{% static 'js/schedule.js' %}"></script>
+    {% endblock %}
     </body>
 </html>

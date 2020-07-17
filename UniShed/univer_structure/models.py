@@ -160,7 +160,7 @@ class Group(models.Model):
                               verbose_name='Ступень обучения')
     course_number = models.CharField(max_length=10, choices=CoursesOfStudent.choices,
                                      default=CoursesOfStudent.FIRST_COURSE, verbose_name='Номер курса')
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="groups", blank=True, null=True)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="groups", blank=True, null=True, verbose_name="Профиль")
     specialty = models.ForeignKey(Specialty, on_delete=models.CASCADE, related_name='groupspecialties',
                                   verbose_name='Специальность')
     quantity_students = models.CharField(max_length=5, null=True, verbose_name='Количество студентов')
@@ -176,7 +176,7 @@ class Student(models.Model):
     class Meta:
         verbose_name_plural = _('Студенты')
 
-    profile = models.OneToOneField(UserProfileInfo, on_delete=models.CASCADE)
+    profile = models.OneToOneField(UserProfileInfo, on_delete=models.CASCADE, related_name="student")
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='students', verbose_name='Группа')
 
     class FormOfStudy(models.TextChoices):
@@ -195,7 +195,7 @@ class Lector(models.Model):
     class Meta:
         verbose_name_plural = _('Преподаватели')
 
-    profile = models.OneToOneField(UserProfileInfo, on_delete=models.CASCADE)
+    profile = models.OneToOneField(UserProfileInfo, on_delete=models.CASCADE, related_name="lector")
     department = models.ManyToManyField(Department, related_name="lectordepartments")
     # don't delete disciplines field below because it contains connected disciplines to the lector
     disciplines = models.ManyToManyField(Discipline, related_name="lectordisciplines")

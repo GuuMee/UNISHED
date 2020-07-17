@@ -1,0 +1,666 @@
+{% extends 'login_user/base.html' %}
+{% load static %}
+
+{% block javascript %}
+    <script src="{% static 'js/schedule.js' %}"></script>
+{% endblock %}
+
+{% block body_block %}
+    <div class="jumbotron">
+        <form id="post-form" class="sort-form" action="{% url 'schedule:sort_schedule_view' %}" method="post">
+            {% csrf_token %}
+            <h4>Выберите:</h4>
+            <div class="form-row align-items-center">
+            <div class="col-auto my-1">
+              <select class="custom-select mr-sm-2" id="select_group">
+                <option>Группу...</option>
+                {% for gr in groups %}
+                    <option id="group-option">{{ gr.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-auto my-1">
+              <select class="custom-select mr-sm-2" id="select_lector">
+                <option>Преподавателя...</option>
+                {% for lc in lectors %}
+                    <option id="lector-option" name="{{ lc.id }}">{{ lc }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-auto my-1">
+              <select class="custom-select mr-sm-2" id="select_room">
+                <option>Аудиторию...</option>
+                {% for au in auditoriums %}
+                    <option id="room-option">{{ au.name }}</option>
+                {% endfor %}
+              </select>
+              <label class="mr-sm-2 sr-only" for="select_lector">Аудитория</label>
+            </div>
+            <div class="col-auto my-1">
+              <select class="custom-select mr-sm-2" id="select_time">
+                <option>Время...</option>
+                  <option id="time-option">8:00-9:30</option>
+                  <option id="time-option">9:40-11:10</option>
+                  <option id="time-option">11:20-12:50</option>
+                  <option id="time-option">13:00-14:30</option>
+                  <option id="time-option">14:40-16:10</option>
+                  <option id="time-option">16:20-17:50</option>
+                  <option id="time-option">18:00-19:30</option>
+                  <option id="time-option">19:40-21:10</option>
+              </select>
+              <label class="mr-sm-2 sr-only" for="select_lector">Время</label>
+            </div>
+            <div class="col-auto my-1">
+              <button type="submit" class="btn btn-info show-sort-schedule">Показать</button>
+            </div>
+            <div class="col-auto my-2 hide_btn change_btn">
+                <button type="button" class="btn btn-outline-info">Изменить</button>
+            </div>
+            <div class="row">
+            <div class="col-auto my-1">
+                    <a class="busy_a btn btn-dark" href="{% url 'schedule:busy_auditoriums' %}" target="_blank">Занятость аудиторий</a>
+            </div>
+                <div class="col-auto my-1">
+                    <a class="busy_a btn btn-dark" href="{% url 'schedule:busy_lectors' %}" target="_blank">Занятость преподавателей</a>
+            </div>
+            </div>
+        </div>
+        </form>
+    </div>
+
+    <div class="panel-heading">
+        <ul class="nav nav-tabs">
+          <li class="nav-item">
+            <a class="nav-link active btn-dark" href="#odd-week" data-toggle="tab">1 неделя</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link btn-dark" href="#even-week" data-toggle="tab">2 неделя</a>
+          </li>
+        </ul>
+    </div>
+
+
+    <div class="panel-body" >
+        <div class="tab-content" id="change_by_select">
+            <div class="tab-pane fade-in active" id="odd-week">
+                <table class="table">
+                  <thead class="thead-light">
+                    <tr>
+                        <th>
+                           <table>
+                            <tr>
+                                <th scope="col">Дни недели</th>
+                            </tr>
+                        </table>
+                        </th>
+                        <th >
+                            <table class="d-flex hed-table" >
+                                <tr>
+                                    <th >Время</th>
+                                    <th >Аудитория</th>
+                                  <th >Группа</th>
+                                  <th >Тип занятия</th>
+                                  <th >Преподаватель</th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                  <th >Название дисциплины</th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th>Изменить</th>
+
+                                </tr>
+                            </table>
+                      </th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                <tr>
+                      <th scope="row">ПОНЕДЕЛЬНИК</th>
+                        <td>
+                            <table class="table-hover">
+                        {% for lesson in odd_monday %}
+
+                                <tr>
+                                    <td>
+                                {% if lesson.has_conflict == True%}
+                                    <p class="conflict_style">{{ lesson.time.time }} </p>
+                                {% else %}
+                                    <p>{{ lesson.time.time }} </p>
+                                {% endif %}
+                            </td>
+                                    <td>{% if lesson.has_conflict == True %}
+                                            <p class="conflict_style">{{ lesson.auditorium.name }} </p>
+                                        {% else %}
+                                            <p>{{ lesson.auditorium.name }} </p>
+                                        {% endif %}
+                                    </td>
+                                    <td><p>{{ lesson.group.name }} </p>
+                                    </td>
+                                    <td><p>{{ lesson.get_class_type_display }} </p></td>
+                                    <td>
+                                        {% if lesson.has_conflict == True%}
+                                            <p class="conflict_style">{{ lesson.lector }} </p>
+                                        {% else %}
+                                            <p>{{ lesson.lector }} </p>
+                                        {% endif %}
+                                    </td>
+                                    <td><p>{{ lesson.discipline }} </p></td>
+                                <td>
+                                    <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'admin:schedule_coursescheduleitem_change' lesson.id %}" target="_blank" >
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </td>
+                                </tr>
+                        {% endfor %}
+                        </table>
+                        </td>
+
+                </tr>
+                    <tr>
+                      <th scope="row">ВТОРНИК</th>
+                            <td>
+                            <table class="table-hover">
+                        {% for lesson in odd_tuesday %}
+
+                                <tr>
+                                    <td>
+                                {% if lesson.has_conflict == True%}
+                                    <p class="conflict_style">{{ lesson.time.time }} </p>
+                                {% else %}
+                                    <p>{{ lesson.time.time }} </p>
+                                {% endif %}
+                            </td>
+                                    <td>{% if lesson.has_conflict == True %}
+                                            <p class="conflict_style">{{ lesson.auditorium.name }} </p>
+                                        {% else %}
+                                            <p>{{ lesson.auditorium.name }} </p>
+                                        {% endif %}
+                                    </td>
+                                    <td><p>{{ lesson.group.name }} </p>
+                                    </td>
+                                    <td><p>{{ lesson.get_class_type_display }} </p></td>
+                                    <td>
+                                        {% if lesson.has_conflict == True%}
+                                            <p class="conflict_style">{{ lesson.lector }} </p>
+                                        {% else %}
+                                            <p>{{ lesson.lector }} </p>
+                                        {% endif %}
+                                    </td>
+                                    <td><p>{{ lesson.discipline }} </p></td>
+                                <td>
+                                    <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'admin:schedule_coursescheduleitem_change' lesson.id %}" target="_blank" >
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </td>
+                                </tr>
+                        {% endfor %}
+                        </table>
+                        </td>
+                    </tr>
+                    <tr>
+                      <th scope="row">CРЕДА</th>
+                           <td>
+                            <table class="table-hover">
+                        {% for lesson in odd_wednesday %}
+
+                                <tr>
+                                    <td>
+                                {% if lesson.has_conflict == True%}
+                                    <p class="conflict_style">{{ lesson.time.time }} </p>
+                                {% else %}
+                                    <p>{{ lesson.time.time }} </p>
+                                {% endif %}
+                            </td>
+                                    <td>{% if lesson.has_conflict == True %}
+                                            <p class="conflict_style">{{ lesson.auditorium.name }} </p>
+                                        {% else %}
+                                            <p>{{ lesson.auditorium.name }} </p>
+                                        {% endif %}
+                                    </td>
+                                    <td><p>{{ lesson.group.name }} </p>
+                                    </td>
+                                    <td><p>{{ lesson.get_class_type_display }} </p></td>
+                                    <td>
+                                        {% if lesson.has_conflict == True%}
+                                            <p class="conflict_style">{{ lesson.lector }} </p>
+                                        {% else %}
+                                            <p>{{ lesson.lector }} </p>
+                                        {% endif %}
+                                    </td>
+                                    <td><p>{{ lesson.discipline }} </p></td>
+                                    <td>
+                                        <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'admin:schedule_coursescheduleitem_change' lesson.id %}" target="_blank" >
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                        {% endfor %}
+                        </table>
+                        </td>
+                    </tr>
+                    <tr>
+                    <th scope="row">ЧЕТВЕРГ</th>
+                         <td>
+                            <table class="table-hover">
+                        {% for lesson in odd_thursday %}
+
+                                <tr>
+                                    <td>
+                                {% if lesson.has_conflict == True%}
+                                    <p class="conflict_style">{{ lesson.time.time }} </p>
+                                {% else %}
+                                    <p>{{ lesson.time.time }} </p>
+                                {% endif %}
+                            </td>
+                                    <td>{% if lesson.has_conflict == True %}
+                                            <p class="conflict_style">{{ lesson.auditorium.name }} </p>
+                                        {% else %}
+                                            <p>{{ lesson.auditorium.name }} </p>
+                                        {% endif %}
+                                    </td>
+                                    <td><p>{{ lesson.group.name }} </p>
+                                    </td>
+                                    <td><p>{{ lesson.get_class_type_display }} </p></td>
+                                    <td>
+                                        {% if lesson.has_conflict == True%}
+                                            <p class="conflict_style">{{ lesson.lector }} </p>
+                                        {% else %}
+                                            <p>{{ lesson.lector }} </p>
+                                        {% endif %}
+                                    </td>
+                                    <td><p>{{ lesson.discipline }} </p></td>
+                                    <td>
+                                        <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'admin:schedule_coursescheduleitem_change' lesson.id %}" target="_blank" >
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                        {% endfor %}
+                        </table>
+                        </td>
+                    </tr>
+                    <tr>
+                    <th scope="row">ПЯТНИЦА</th>
+                        <td>
+                            <table class="table-hover">
+                        {% for lesson in odd_friday %}
+
+                                <tr>
+                                    <td>
+                                {% if lesson.has_conflict == True%}
+                                    <p class="conflict_style">{{ lesson.time.time }} </p>
+                                {% else %}
+                                    <p>{{ lesson.time.time }} </p>
+                                {% endif %}
+                            </td>
+                                    <td>{% if lesson.has_conflict == True %}
+                                            <p class="conflict_style">{{ lesson.auditorium.name }} </p>
+                                        {% else %}
+                                            <p>{{ lesson.auditorium.name }} </p>
+                                        {% endif %}
+                                    </td>
+                                    <td><p>{{ lesson.group.name }} </p>
+                                    </td>
+                                    <td><p>{{ lesson.get_class_type_display }} </p></td>
+                                    <td>
+                                        {% if lesson.has_conflict == True%}
+                                            <p class="conflict_style">{{ lesson.lector }} </p>
+                                        {% else %}
+                                            <p>{{ lesson.lector }} </p>
+                                        {% endif %}
+                                    </td>
+                                    <td><p>{{ lesson.discipline }} </p></td>
+                                    <td>
+                                        <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'admin:schedule_coursescheduleitem_change' lesson.id %}" target="_blank" >
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                        {% endfor %}
+                        </table>
+                        </td>
+                    </tr>
+                    <tr>
+                    <th scope="row">СУББОТА</th>
+                        <td>
+                            <table class="table-hover">
+                        {% for lesson in odd_saturday %}
+
+                                <tr>
+                                    <td>
+                                {% if lesson.has_conflict == True%}
+                                    <p class="conflict_style">{{ lesson.time.time }} </p>
+                                {% else %}
+                                    <p>{{ lesson.time.time }} </p>
+                                {% endif %}
+                            </td>
+                                    <td>{% if lesson.has_conflict == True %}
+                                            <p class="conflict_style">{{ lesson.auditorium.name }} </p>
+                                        {% else %}
+                                            <p>{{ lesson.auditorium.name }} </p>
+                                        {% endif %}
+                                    </td>
+                                    <td><p>{{ lesson.group.name }} </p>
+                                    </td>
+                                    <td><p>{{ lesson.get_class_type_display }} </p></td>
+                                    <td>
+                                        {% if lesson.has_conflict == True%}
+                                            <p class="conflict_style">{{ lesson.lector }} </p>
+                                        {% else %}
+                                            <p>{{ lesson.lector }} </p>
+                                        {% endif %}
+                                    </td>
+                                  <td>
+                                        <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'admin:schedule_coursescheduleitem_change' lesson.id %}" target="_blank" >
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </td>  <td><p>{{ lesson.discipline }} </p></td>
+
+                                </tr>
+                        {% endfor %}
+                        </table>
+                        </td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+
+
+            <div class="tab-pane fade" id="even-week">
+                <table class="table">
+                  <thead class="thead-light">
+                    <tr>
+                        <th>
+                           <table >
+                            <tr>
+                                <th scope="col">Дни недели</th>
+                            </tr>
+                        </table>
+                        </th>
+                        <th >
+                            <table class="d-flex hed-table" >
+                                <tr>
+                                    <th scope="col">Время</th>
+                                    <th scope="col">Аудитория</th>
+                                  <th scope="col">Группа</th>
+                                  <th scope="col">Тип занятия</th>
+                                  <th >Преподаватель</th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                  <th >Название дисциплины</th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
+                                    <th>Изменить</th>
+                            </table>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                <tr>
+                      <th scope="row">ПОНЕДЕЛЬНИК</th>
+                        <td>
+                            <table class="table-hover">
+                        {% for lesson in even_monday %}
+                                <tr>
+                                    <td>
+                                {% if lesson.has_conflict == True%}
+                                    <p class="conflict_style">{{ lesson.time.time }} </p>
+                                {% else %}
+                                    <p>{{ lesson.time.time }} </p>
+                                {% endif %}
+                            </td>
+                                    <td>{% if lesson.has_conflict == True %}
+                                            <p class="conflict_style">{{ lesson.auditorium.name }} </p>
+                                        {% else %}
+                                            <p>{{ lesson.auditorium.name }} </p>
+                                        {% endif %}
+                                    </td>
+                                    <td><p>{{ lesson.group.name }} </p>
+                                    </td>
+                                    <td><p>{{ lesson.get_class_type_display }} </p></td>
+                                    <td>
+                                        {% if lesson.has_conflict == True%}
+                                            <p class="conflict_style">{{ lesson.lector }} </p>
+                                        {% else %}
+                                            <p>{{ lesson.lector }} </p>
+                                        {% endif %}
+                                    </td>
+                                    <td><p>{{ lesson.discipline }} </p></td>
+                                    <td>
+                                        <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'admin:schedule_coursescheduleitem_change' lesson.id %}" target="_blank" >
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                        {% endfor %}
+                        </table>
+                        </td>
+
+                </tr>
+                    <tr>
+                      <th scope="row">ВТОРНИК</th>
+                            <td>
+                            <table class="table-hover">
+                        {% for lesson in even_tuesday %}
+
+                                <tr>
+                                    <td>
+                                {% if lesson.has_conflict == True%}
+                                    <p class="conflict_style">{{ lesson.time.time }} </p>
+                                {% else %}
+                                    <p>{{ lesson.time.time }} </p>
+                                {% endif %}
+                            </td>
+                                    <td>{% if lesson.has_conflict == True %}
+                                            <p class="conflict_style">{{ lesson.auditorium.name }} </p>
+                                        {% else %}
+                                            <p>{{ lesson.auditorium.name }} </p>
+                                        {% endif %}
+                                    </td>
+                                    <td><p>{{ lesson.group.name }} </p>
+                                    </td>
+                                    <td><p>{{ lesson.get_class_type_display }} </p></td>
+                                    <td>
+                                        {% if lesson.has_conflict == True%}
+                                            <p class="conflict_style">{{ lesson.lector }} </p>
+                                        {% else %}
+                                            <p>{{ lesson.lector }} </p>
+                                        {% endif %}
+                                    </td>
+                                    <td><p>{{ lesson.discipline }} </p></td>
+                                    <td>
+                                        <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'admin:schedule_coursescheduleitem_change' lesson.id %}" target="_blank" >
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                        {% endfor %}
+                        </table>
+                        </td>
+                    </tr>
+                    <tr>
+                      <th scope="row">CРЕДА</th>
+                           <td>
+                            <table class="table-hover">
+                        {% for lesson in even_wednesday %}
+
+                                <tr>
+                                    <td>
+                                {% if lesson.has_conflict == True%}
+                                    <p class="conflict_style">{{ lesson.time.time }} </p>
+                                {% else %}
+                                    <p>{{ lesson.time.time }} </p>
+                                {% endif %}
+                            </td>
+                                    <td>{% if lesson.has_conflict == True %}
+                                            <p class="conflict_style">{{ lesson.auditorium.name }} </p>
+                                        {% else %}
+                                            <p>{{ lesson.auditorium.name }} </p>
+                                        {% endif %}
+                                    </td>
+                                    <td><p>{{ lesson.group.name }} </p>
+                                    </td>
+                                    <td><p>{{ lesson.get_class_type_display }} </p></td>
+                                    <td>
+                                        {% if lesson.has_conflict == True%}
+                                            <p class="conflict_style">{{ lesson.lector }} </p>
+                                        {% else %}
+                                            <p>{{ lesson.lector }} </p>
+                                        {% endif %}
+                                    </td>
+                                    <td><p>{{ lesson.discipline }} </p></td>
+                                    <td>
+                                        <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'admin:schedule_coursescheduleitem_change' lesson.id %}" target="_blank" >
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                        {% endfor %}
+                        </table>
+                        </td>
+                    </tr>
+                    <tr>
+                    <th scope="row">ЧЕТВЕРГ</th>
+                         <td>
+                            <table class="table-hover">
+                        {% for lesson in even_thursday %}
+
+                                <tr>
+                                    <td>
+                                {% if lesson.has_conflict == True%}
+                                    <p class="conflict_style">{{ lesson.time.time }} </p>
+                                {% else %}
+                                    <p>{{ lesson.time.time }} </p>
+                                {% endif %}
+                            </td>
+                                    <td>{% if lesson.has_conflict == True %}
+                                            <p class="conflict_style">{{ lesson.auditorium.name }} </p>
+                                        {% else %}
+                                            <p>{{ lesson.auditorium.name }} </p>
+                                        {% endif %}
+                                    </td>
+                                    <td><p>{{ lesson.group.name }} </p>
+                                    </td>
+                                    <td><p>{{ lesson.get_class_type_display }} </p></td>
+                                    <td>
+                                        {% if lesson.has_conflict == True%}
+                                            <p class="conflict_style">{{ lesson.lector }} </p>
+                                        {% else %}
+                                            <p>{{ lesson.lector }} </p>
+                                        {% endif %}
+                                    </td>
+                                    <td><p>{{ lesson.discipline }} </p></td>
+                                    <td>
+                                        <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'admin:schedule_coursescheduleitem_change' lesson.id %}" target="_blank" >
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                        {% endfor %}
+                        </table>
+                        </td>
+                    </tr>
+                    <tr>
+                    <th scope="row">ПЯТНИЦА</th>
+                        <td>
+                            <table class="table-hover">
+                        {% for lesson in even_friday %}
+
+                                <tr>
+                                    <td>
+                                {% if lesson.has_conflict == True%}
+                                    <p class="conflict_style">{{ lesson.time.time }} </p>
+                                {% else %}
+                                    <p>{{ lesson.time.time }} </p>
+                                {% endif %}
+                            </td>
+                                    <td>{% if lesson.has_conflict == True %}
+                                            <p class="conflict_style">{{ lesson.auditorium.name }} </p>
+                                        {% else %}
+                                            <p>{{ lesson.auditorium.name }} </p>
+                                        {% endif %}
+                                    </td>
+                                    <td><p>{{ lesson.group.name }} </p>
+                                    </td>
+                                    <td><p>{{ lesson.get_class_type_display }} </p></td>
+                                    <td>
+                                        {% if lesson.has_conflict == True%}
+                                            <p class="conflict_style">{{ lesson.lector }} </p>
+                                        {% else %}
+                                            <p>{{ lesson.lector }} </p>
+                                        {% endif %}
+                                    </td>
+                                    <td><p>{{ lesson.discipline }} </p></td>
+                                    <td>
+                                        <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'admin:schedule_coursescheduleitem_change' lesson.id %}" target="_blank" >
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                        {% endfor %}
+                        </table>
+                        </td>
+                    </tr>
+                    <tr>
+                    <th scope="row">СУББОТА</th>
+                        <td>
+                            <table class="table-hover">
+                        {% for lesson in even_saturday %}
+
+                                <tr>
+                                    <td>
+                                {% if lesson.has_conflict == True%}
+                                    <p class="conflict_style">{{ lesson.time.time }} </p>
+                                {% else %}
+                                    <p>{{ lesson.time.time }} </p>
+                                {% endif %}
+                            </td>
+                                    <td>{% if lesson.has_conflict == True %}
+                                            <p class="conflict_style">{{ lesson.auditorium.name }} </p>
+                                        {% else %}
+                                            <p>{{ lesson.auditorium.name }} </p>
+                                        {% endif %}
+                                    </td>
+                                    <td><p>{{ lesson.group.name }} </p>
+                                    </td>
+                                    <td><p>{{ lesson.get_class_type_display }} </p></td>
+                                    <td>
+                                        {% if lesson.has_conflict == True%}
+                                            <p class="conflict_style">{{ lesson.lector }} </p>
+                                        {% else %}
+                                            <p>{{ lesson.lector }} </p>
+                                        {% endif %}
+                                    </td>
+                                    <td><p>{{ lesson.discipline }} </p></td>
+                                    <td>
+                                        <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'admin:schedule_coursescheduleitem_change' lesson.id %}" target="_blank" >
+                                        <i class="fas fa-edit"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                        {% endfor %}
+                        </table>
+                        </td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{%endblock%}

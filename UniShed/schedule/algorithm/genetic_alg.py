@@ -1,3 +1,6 @@
+import concurrent.futures
+import time
+
 import prettytable as prettytable
 import random as rnd
 
@@ -29,11 +32,8 @@ class DBMgr:
 
         self._numberOfClasses = 0
 
-        # количество пар зависит от того, сколько дисциплин в кафедрах чтоли?
-        # (есть группы в которых есть дисциплины и они повторяются)
-        # нужно этот цикл добавить в цикл групп
         for i in range(0, len(self._depts)):
-            self._numberOfClasses += len(self._depts[i].get_disciplines()) # у groups[i].get_disciplines() метода нету
+            self._numberOfClasses += len(self._depts[i].get_disciplines())
 
     def select_profiles(self):
         profiles = ProfileModel.objects.all()
@@ -156,9 +156,6 @@ class DBMgr:
     def get_rooms(self):
         return self._rooms
 
-    """
-    def get_corpuses(self):
-        return self._corpuses """
 
     def get_instructors(self):
         return self._instructors
@@ -250,11 +247,11 @@ class Schedule:
             class_2 = Class(self._classNumb, group, discipline, lector, class_type)
             class_2.set_room(selected_room)
             even_meeting_times = self.data.get_even_meeting_times()
-            class_2.set_meetingTime(odd_meeting_times[rnd.randrange(0, len(even_meeting_times))])
+            class_2.set_meetingTime(even_meeting_times[rnd.randrange(0, len(even_meeting_times))])
             classes.append(class_2)
             self._classNumb += 1
 
-        if hours == 54:
+        if hours >= 54:
             class_3 = Class(self._classNumb, group, discipline, lector, class_type)
             class_3.set_room(selected_room)
             meeting_times = self.data.get_meetingTimes()
@@ -269,6 +266,11 @@ class Schedule:
         for group in groups:
             for ds in group.get_disciplines():
                 for class_type in self.data.get_class_types():
+
+                    # with concurrent.futures.ThreadPoolExecutor(
+                    #         max_workers=POPULATION_SIZE - NUMB_OF_ELITE_SCHEDULES) as executor:
+                    #     executor.map(self )
+
                     if getattr(ds, class_type):
                         classes = self.create_classes(group, ds, class_type)
                         self._classes += classes
@@ -283,10 +285,10 @@ class Schedule:
                 self._numbOfConflicts += 1
 
             for j in range(i+1, len(classes)):
-                if (classes[i].get_discipline() == classes[j].get_discipline() and
-                    classes[i].get_class_type() == classes[j].get_class_type() and not
-                        classes[i].get_room() != classes[j].get_room()):
-                    self._numbOfConflicts += 1
+                #if ( classes[i].get_discipline() == classes[j].get_discipline() and
+                    #classes[i].get_class_type() == classes[j].get_class_type() and not
+                        #classes[i].get_room() != classes[j].get_room()):
+                    #self._numbOfConflicts += 1
                 if (classes[i].get_meetingTime() == classes[j].get_meetingTime() and
                         classes[i].get_id() != classes[j].get_id()):
 
@@ -319,7 +321,7 @@ class Schedule:
 class Population:
     def __init__(self, size, data):
         self._size = size  # size of the population
-        self.data = data  # ???don't know why this should be needed?
+        self.data = data
         self._schedules = []  # population schedules we have get method for that
 
         for i in range(0, size):
@@ -346,19 +348,30 @@ class GeneticAlgorithm:
         while i < POPULATION_SIZE:
             tournament_pop = self._select_tournament_population(pop)
             schedule1 = tournament_pop.get_schedules()[0]
-            schedule2 = tournament_pop.get_schedules()[1]
+            schedule2 = tournament_pop.get_schedules()[0]
             crossover_pop.get_schedules().append(self._crossover_schedule(schedule1, schedule2))
             i += 1
         return crossover_pop
+
 
     def _mutate_population(self, population):
         for i in range(NUMB_OF_ELITE_SCHEDULES, POPULATION_SIZE):
             self._mutate_schedule(population.get_schedules()[i])
         return population
 
+    """
+    def _mutate_population(self, population):
+        with concurrent.futures.ThreadPoolExecutor(max_workers=POPULATION_SIZE - NUMB_OF_ELITE_SCHEDULES) as executor:
+            executor.map(self._mutate_schedule, population.get_schedules()[NUMB_OF_ELITE_SCHEDULES:POPULATION_SIZE])
+        return population
+    """
+
     def _crossover_schedule(self, schedule1, schedule2):
         crossoverSchedule = Schedule(self.data).initialize()
         for i in range(0, len(crossoverSchedule.get_classes())):
+            # with concurrent.futures.ThreadPoolExecutor(
+            #         max_workers=POPULATION_SIZE - NUMB_OF_ELITE_SCHEDULES) as executor:
+            #     executor.map(self._crossover_schedule)
             if (rnd.random() > 0.5):
                 crossoverSchedule.get_classes()[i] = schedule1.get_classes()[i]
             else:
@@ -367,8 +380,10 @@ class GeneticAlgorithm:
 
     def _mutate_schedule(self, mutateSchedule):
         schedule = Schedule(self.data).initialize()
+
         for i in range(0, len(mutateSchedule.get_classes())):
-            if MUTATION_RATE > rnd.random(): mutateSchedule.get_classes()[i] = schedule.get_classes()[i]
+            if MUTATION_RATE > rnd.random():
+                mutateSchedule.get_classes()[i] = schedule.get_classes()[i]
         return mutateSchedule
 
     def _select_tournament_population(self, pop):
@@ -614,11 +629,7 @@ class Class:  # Пара
 
     def __str__(self):
         return str(self._meetingTime.get_id()) + "," + str(self._discipline.get_number()) + "," + \
-               str(self._room.get_number()) + "," + str(self._instructor.get_id()) + ","  # need tp add group
-
-        # each class will be the Department name, the Course number, Room Number, instructor_id (why?), meeting time
-        """return str(self._dept.get_name()) + "," +  str(self._discipline.get_number()) + "," + \
-               str(self._room.get_number()) + "," + str(self._instructor.get_id()) + "," + str(self._meetingTime.get_id())"""
+               str(self._room.get_number()) + "," + str(self._instructor.get_id()) + ","
 
 
 class DisplayMgr:  # display manager class
@@ -684,7 +695,7 @@ class DisplayMgr:  # display manager class
 
     def print_generation(self, population):  # prints generation
         table1 = prettytable.PrettyTable(
-            ['schedule #', 'fitness', '# of conflicts', 'classes [dept,class,room,instructor,meeting-time]'])
+            ['# расписания', 'фитнес', '# конфликтов', 'хромосомы - занятия[кафедра, занятие, аудитория,преподаватель,время]'])
         schedules = population.get_schedules()
         for i in range(0, len(schedules)):
             table1.add_row([str(i + 1), round(schedules[i].get_fitness(), 3), schedules[i].get_numbOfConflicts(),
@@ -694,8 +705,8 @@ class DisplayMgr:  # display manager class
     def print_schedule_as_table(self, schedule):  # Prints the schedule as a table
         classes = schedule.get_classes()
         table = prettytable.PrettyTable(
-            ['Class # (type)', 'Group', 'Course (number, # of students)', 'Room (Capacity)', 'Instructor (Id)',
-             'Meeting Time (Id)'])
+            ['Пара # (тип)', 'Группа', 'Дисциплины (id, # количество студентов группы`)', 'Аудитория (Вместимость)', 'Преподаватель (Id)',
+             'Время занятий (Id)'])
         for i in range(0, len(classes)):
             table.add_row(
                 [str(i + 1) + "(" + classes[i].get_class_type() + ")",
@@ -725,20 +736,41 @@ def run():
     # this will print generation zero (0), because generationNumber = 0
     displayMgr.print_generation(population)
 
+
     # fittest schedule in that generation in table format
     displayMgr.print_schedule_as_table(population.get_schedules()[0])
+
+    start_time = time.time()
+
+
 
     geneticAlgorithm = GeneticAlgorithm(data)
     while population.get_schedules()[0].get_fitness() < 1.0:
         generationNumber += 1
-        print("\n> Generation # " + str(generationNumber))
-
-        # we evovle the population from one generation to the next
-        # until we get to a population where the fittest schedule has zero (0) conflicts
+        print("\n> Поколение # " + str(generationNumber))
+        per_gen = time.time()
+        # мы эволюционируем популяцию с одного поколения в другое
+        # пока мы не придём к популяции, где функция приспособленности расписания будет иметь (0) конфликтов
         population = geneticAlgorithm.evolve(population)
+
+        # применение многопоточности
+        with concurrent.futures.ThreadPoolExecutor(
+              max_workers=POPULATION_SIZE - NUMB_OF_ELITE_SCHEDULES) as executor:
+            executor.map(population, population.get_schedules()[NUMB_OF_ELITE_SCHEDULES:POPULATION_SIZE])
+
         population.get_schedules().sort(key=lambda x: x.get_fitness(), reverse=True)
+
+        print("ВЫПОЛНЕНИЕ ОДНОГО ПОКОЛЕНИЯ:--- %s секунд ---" % (time.time() - per_gen))
+        print("ОБЩЕЕ ВЫПОЛНЕНИЕ:--- %s секунд ---" % (time.time() - start_time))
         displayMgr.print_generation(population)
         displayMgr.print_schedule_as_table(population.get_schedules()[0])
+
+        # with concurrent.futures.ThreadPoolExecutor(
+        #         max_workers=POPULATION_SIZE - NUMB_OF_ELITE_SCHEDULES) as executor:
+        #     executor.map(displayMgr.print_generation, population.get_schedules()[NUMB_OF_ELITE_SCHEDULES:POPULATION_SIZE])
+
+
+
 
     population.get_schedules()[0].save()
 

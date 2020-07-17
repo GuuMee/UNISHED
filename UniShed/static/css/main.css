@@ -5,3 +5,44 @@ ul li {
 .jumbotron {
     padding: 2rem 2rem;
 }
+
+.mynav {
+    background-color: #ab5c59 !important;
+}
+
+.hide_btn{
+    display: none;
+}
+
+.conflict_style{
+    background-color: rgba(255, 53, 53, 0.5);
+}
+
+a.busy_a, a.busy_a:active, a.busy_a:link, a.busy_a:visited{
+    text-decoration: none;
+    color: #ffffff;
+}
+
+table.hed-table{
+    border-bottom: none;
+    border-top: none;
+    border-top-color: rgba(123, 123, 123, 0.0);
+    border-bottom-color: rgba(123, 123, 123, 0.0);
+}
+
+
+.full-width {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+}
+
+th.rotate-cell{
+    writing-mode: vertical-lr;
+}
+
+
+

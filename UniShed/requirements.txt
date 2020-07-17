@@ -4,6 +4,7 @@ phonenumbers==8.12.4
 beautifulsoup4==4.9.1
 django-bootstrap4==1.1.1
 soupsieve==2.0.1
-django-bootstrap-datepicker-plus==3.2.7
+django-bootstrap-datepicker-plus==3.0.5
 prettytable==0.7.2
 django-multiselectfield==0.1.12
+django-tables2==2.3.1

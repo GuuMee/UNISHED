@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def index(request):
-    return render(request, 'index.html')
+    return render(request, 'login_user/index.html')
 
 
 def special(request):
@@ -23,7 +23,6 @@ def user_logout(request):
 
 
 def register(request):
-
     registered = False
 
     if request.method == "POST":

@@ -1,0 +1,399 @@
+{% extends 'login_user/base.html' %}
+{% load static %}
+
+{% block body_block %}
+
+    <div class="jumbotron">
+        <h2>Студент: {{ student.profile.user.last_name}}
+            {{ student.profile.user.first_name}}
+            {{ student.profile.middle_name }}</h2>
+        <h3>Группа: {{ group.name }}</h3>
+    </div>
+
+    <div class="panel-heading">
+        <ul class="nav nav-tabs">
+          <li class="nav-item">
+            <a class="nav-link active" href="#odd-week" data-toggle="tab">1 неделя</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#even-week" data-toggle="tab">2 неделя</a>
+          </li>
+        </ul>
+    </div>
+
+    <div class="panel-body" >
+        <div class="tab-content">
+            <div class="tab-pane fade-in active" id="odd-week">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Дни недели</th>
+                      <th scope="col">Время</th>
+                      <th scope="col">Аудитория</th>
+                      <th scope="col">Тип занятия</th>
+                      <th scope="col">Преподаватель</th>
+                      <th scope="col">Название дисциплины</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">Понедельник</th>
+                    <td>
+                        {% for lesson in odd_monday %}
+                          <p>{{ lesson.time.time }} </p>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in odd_monday %}
+                          <p>{{ lesson.auditorium.name }}</p>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in odd_monday %}
+                          <p>{{ lesson.get_class_type_display }}</p>
+                            {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in odd_monday %}
+                          <p>{{ lesson.lector }}</p>
+                            {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in odd_monday %}
+                          <p>{{ lesson.discipline }}</p>
+                        {% endfor %}
+                    </td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Вторник</th>
+                        <td>
+                        {% for lesson in odd_tuesday %}
+                          <p>{{ lesson.time.time }} </p>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in odd_tuesday %}
+                          <p>{{ lesson.auditorium.name }}</p>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in odd_tuesday %}
+                          <p>{{ lesson.get_class_type_display }}</p>
+                            {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in odd_tuesday %}
+                          <p>{{ lesson.lector }}</p>
+                            {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in odd_tuesday %}
+                          <p>{{ lesson.discipline }}</p>
+                        {% endfor %}
+                    </td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Cреда</th>
+                      <td>
+                        {% for lesson in odd_wednesday %}
+                          <p>{{ lesson.time.time }} </p>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in odd_wednesday %}
+                          <p>{{ lesson.auditorium.name }}</p>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in odd_wednesday %}
+                          <p>{{ lesson.get_class_type_display }}</p>
+                            {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in odd_wednesday %}
+                          <p>{{ lesson.lector }}</p>
+                            {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in odd_wednesday %}
+                          <p>{{ lesson.discipline }}</p>
+                        {% endfor %}
+                    </td>
+                    </tr>
+                    <tr>
+                    <th scope="row">Четверг</th>
+                      <td>
+                        {% for lesson in odd_thursday %}
+                          <p>{{ lesson.time.time }} </p>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in odd_thursday %}
+                          <p>{{ lesson.auditorium.name }}</p>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in odd_thursday %}
+                          <p>{{ lesson.get_class_type_display }}</p>
+                            {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in odd_thursday %}
+                          <p>{{ lesson.lector }}</p>
+                            {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in odd_thursday %}
+                          <p>{{ lesson.discipline }}</p>
+                        {% endfor %}
+                    </td>
+                    </tr>
+                    <tr>
+                    <th scope="row">Пятница</th>
+                      <td>
+                        {% for lesson in odd_friday %}
+                          <p>{{ lesson.time.time }} </p>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in odd_friday %}
+                          <p>{{ lesson.auditorium.name }}</p>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in odd_friday %}
+                          <p>{{ lesson.get_class_type_display }}</p>
+                            {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in odd_friday %}
+                          <p>{{ lesson.lector }}</p>
+                            {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in odd_friday %}
+                          <p>{{ lesson.discipline }}</p>
+                        {% endfor %}
+                    </td>
+                    </tr>
+                    <tr>
+                    <th scope="row">Суббота</th>
+                      <td>
+                        {% for lesson in odd_saturday %}
+                          <p>{{ lesson.time.time }} </p>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in odd_saturday %}
+                          <p>{{ lesson.auditorium.name }}</p>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in odd_saturday %}
+                          <p>{{ lesson.get_class_type_display }}</p>
+                            {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in odd_saturday %}
+                          <p>{{ lesson.lector }}</p>
+                            {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in odd_saturday %}
+                          <p>{{ lesson.discipline }}</p>
+                        {% endfor %}
+                    </td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+
+
+            <div class="tab-pane fade" id="even-week">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Дни недели</th>
+                      <th scope="col">Время</th>
+                      <th scope="col">Аудитория</th>
+                      <th scope="col">Тип занятия</th>
+                      <th scope="col">Преподаватель</th>
+                      <th scope="col">Название дисциплины</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">Понедельник</th>
+                    <td>
+                        {% for lesson in even_monday %}
+                          <p>{{ lesson.time.time }} </p>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in even_monday %}
+                          <p>{{ lesson.auditorium.name }}</p>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in even_monday %}
+                          <p>{{ lesson.get_class_type_display }}</p>
+                            {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in even_monday %}
+                          <p>{{ lesson.lector }}</p>
+                            {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in even_monday %}
+                          <p>{{ lesson.discipline }}</p>
+                        {% endfor %}
+                    </td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Вторник</th>
+                        <td>
+                        {% for lesson in even_tuesday %}
+                          <p>{{ lesson.time.time }} </p>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in even_tuesday %}
+                          <p>{{ lesson.auditorium.name }}</p>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in even_tuesday %}
+                          <p>{{ lesson.get_class_type_display }}</p>
+                            {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in even_tuesday %}
+                          <p>{{ lesson.lector }}</p>
+                            {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in even_tuesday %}
+                          <p>{{ lesson.discipline }}</p>
+                        {% endfor %}
+                    </td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Cреда</th>
+                      <td>
+                        {% for lesson in even_wednesday %}
+                          <p>{{ lesson.time.time }} </p>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in even_wednesday %}
+                          <p>{{ lesson.auditorium.name }}</p>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in even_wednesday %}
+                          <p>{{ lesson.get_class_type_display }}</p>
+                            {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in even_wednesday %}
+                          <p>{{ lesson.lector }}</p>
+                            {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in even_wednesday %}
+                          <p>{{ lesson.discipline }}</p>
+                        {% endfor %}
+                    </td>
+                    </tr>
+                    <tr>
+                    <th scope="row">Четверг</th>
+                      <td>
+                        {% for lesson in even_thursday %}
+                          <p>{{ lesson.time.time }} </p>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in even_thursday %}
+                          <p>{{ lesson.auditorium.name }}</p>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in even_thursday %}
+                          <p>{{ lesson.get_class_type_display }}</p>
+                            {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in even_thursday %}
+                          <p>{{ lesson.lector }}</p>
+                            {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in even_thursday %}
+                          <p>{{ lesson.discipline }}</p>
+                        {% endfor %}
+                    </td>
+                    </tr>
+                    <tr>
+                    <th scope="row">Пятница</th>
+                      <td>
+                        {% for lesson in even_friday %}
+                          <p>{{ lesson.time.time }} </p>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in even_friday %}
+                          <p>{{ lesson.auditorium.name }}</p>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in even_friday %}
+                          <p>{{ lesson.get_class_type_display }}</p>
+                            {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in even_friday %}
+                          <p>{{ lesson.lector }}</p>
+                            {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in even_friday %}
+                          <p>{{ lesson.discipline }}</p>
+                        {% endfor %}
+                    </td>
+                    </tr>
+                    <tr>
+                    <th scope="row">Суббота</th>
+                      <td>
+                        {% for lesson in even_saturday %}
+                          <p>{{ lesson.time.time }} </p>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in even_saturday %}
+                          <p>{{ lesson.auditorium.name }}</p>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in even_saturday %}
+                          <p>{{ lesson.get_class_type_display }}</p>
+                            {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in even_saturday %}
+                          <p>{{ lesson.lector }}</p>
+                            {% endfor %}
+                    </td>
+                    <td>
+                        {% for lesson in even_saturday %}
+                          <p>{{ lesson.discipline }}</p>
+                        {% endfor %}
+                    </td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{%endblock%}

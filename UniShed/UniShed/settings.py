@@ -45,9 +45,14 @@ INSTALLED_APPS = [
     'univer_structure',
     'schedule',
     'multiselectfield',
-
-
+    'django_tables2',
+    'django_extensions'
 ]
+
+GRAPH_MODELS = {
+  'all_applications': True,
+  'group_models': True,
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

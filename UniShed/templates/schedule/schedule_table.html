@@ -1,0 +1,9 @@
+{% extends 'login_user/base.html' %}
+{% load render_table from django_tables2 %}
+{% load static %}
+
+<div class="container">
+    {% block body_block %}
+        {% render_table object_list %}
+    {% endblock %}
+</div>
